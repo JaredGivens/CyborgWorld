@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+.DS_Store
+Fb/
+.venv/
+*.blend1
+*.import
+*.nettrace
+*.dmg
+*.speedscope.json
+*.chromium.json
+build/
+.cache/
+compile_commands.json
