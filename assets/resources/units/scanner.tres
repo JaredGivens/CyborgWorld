@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://dvokqsice3syu"]
+
+[ext_resource type="Texture2D" uid="uid://babr46duh3q8a" path="res://textures/chunk/old-console-monitor_albedo.png" id="1_rxhhw"]
+[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_t165q"]
+
+[resource]
+script = ExtResource("2_t165q")
+Name = "scanner"
+Desc = "block for scanning for chests."
+Icon = ExtResource("1_rxhhw")
+Type = 2

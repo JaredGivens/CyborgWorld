@@ -1,0 +1,10 @@
+namespace Fb;
+struct Location {
+  bit_arr:short;
+  bit:short;
+  page_count:short;
+}
+table Header {
+  locations:[Location];
+}
+root_type Header;

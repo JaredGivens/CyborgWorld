@@ -1,0 +1,8 @@
+namespace Fb;
+table Prefab {
+  width: int;
+  height: int;
+  depth: int;
+  cells:[int];
+}
+root_type Prefab;

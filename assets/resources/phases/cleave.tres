@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ddbijklq3pvc3"]
+
+[ext_resource type="Script" path="res://scripts/Phase.cs" id="1_vchfs"]
+
+[resource]
+script = ExtResource("1_vchfs")
+Speed = 0.0
+Type = 1
+AoeShape = 2

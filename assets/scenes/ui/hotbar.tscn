@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://curr1cqprp3gl"]
+
+[ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/unit_slot_texture.tscn" id="1_4odkm"]
+[ext_resource type="Script" path="res://scripts/player/Hotbar.cs" id="1_07ocb"]
+
+[node name="Hotbar" type="HBoxContainer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_07ocb")
+
+[node name="VBoxContainer0" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer0"]
+layout_mode = 2
+text = "Q"
+
+[node name="UnitSlotTexture0" parent="VBoxContainer0" instance=ExtResource("1_4odkm")]
+layout_mode = 2
+
+[node name="VBoxContainer1" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer1"]
+layout_mode = 2
+text = "E"
+
+[node name="UnitSlotTexture1" parent="VBoxContainer1" instance=ExtResource("1_4odkm")]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "R"
+
+[node name="UnitSlotTexture2" parent="VBoxContainer2" instance=ExtResource("1_4odkm")]
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer3"]
+layout_mode = 2
+text = "F
+"
+
+[node name="UnitSlotTexture3" parent="VBoxContainer3" instance=ExtResource("1_4odkm")]
+layout_mode = 2
