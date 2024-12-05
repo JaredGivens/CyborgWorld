@@ -1,0 +1,6 @@
+[submodule "thirdparty/godot"]
+	path = godot
+	url = git@github.com:godotengine/godot.git
+[submodule "godot"]
+	path = godot
+	url = git@github.com:godotengine/godot.git
