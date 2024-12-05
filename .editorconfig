@@ -1,0 +1,14 @@
+[*.cs]
+indent_style = space
+indent_size = 2
+csharp_new_line_before_open_brace = object_collection_array_initalizers
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_new_line_between_query_expression_clauses = false
+csharp_indent_switch_labels = true
+csharp_indent_case_contents = false
+csharp_prefer_braces = true:suggestion
+

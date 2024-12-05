@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dusm32ygh1ng6"]
+
+[ext_resource type="Script" path="res://scripts/Phase.cs" id="1_elbj4"]
+
+[resource]
+script = ExtResource("1_elbj4")
+Speed = 0.0
+Type = 0
+AoeShape = 3

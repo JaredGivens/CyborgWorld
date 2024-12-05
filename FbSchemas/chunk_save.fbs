@@ -1,0 +1,6 @@
+namespace Fb;
+table ChunkSave {
+  cells:[int];
+  items:[short];
+}
+root_type ChunkSave;

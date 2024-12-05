@@ -1,0 +1,30 @@
+namespace Fb;
+table Stack {
+  name:string;
+  amt:int;
+}
+struct Vec3 {
+  x:float;
+  y:float;
+  z:float;
+}
+struct Tsf3 {
+  column0:Vec3;
+  column1:Vec3;
+  column2:Vec3;
+  origin:Vec3;
+}
+table Player {
+  player_transform:Tsf3;
+  camera_transform:Tsf3;
+  velocity:Vec3;
+  hotbar_selection:int;
+  level:int;
+  health:int;
+  max_health:int;
+  phases:[int];
+  inventory:[Stack];
+  hotbar:[Stack];
+}
+root_type Player;
+

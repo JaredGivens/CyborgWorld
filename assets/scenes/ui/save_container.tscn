@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://b34xpu2xtxtdv"]
+
+[ext_resource type="Script" path="res://scripts/ui/SaveContainer.cs" id="1_h0j4c"]
+[ext_resource type="Texture2D" uid="uid://cxsijlbx5cnek" path="res://textures/icons/play.svg" id="2_3up2g"]
+[ext_resource type="Texture2D" uid="uid://b3d6pbtqa2d3e" path="res://textures/icons/delete.svg" id="3_qyqd8"]
+
+[node name="SaveContainer" type="HBoxContainer"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -73.0
+offset_top = -16.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
+script = ExtResource("1_h0j4c")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("2_3up2g")
+
+[node name="DeleteButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("3_qyqd8")

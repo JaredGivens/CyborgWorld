@@ -1,0 +1,60 @@
+{"frames": {
+
+"aluminum-squares_NH.png":
+{
+	"frame": {"x":1,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"ash-tree-bark_NH.png":
+{
+	"frame": {"x":1,"y":515,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"cement_arcing_pattern1_NH.png":
+{
+	"frame": {"x":1,"y":1029,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"dirtwithrocks_NH.png":
+{
+	"frame": {"x":515,"y":1,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"grassy-meadow1_NH.png":
+{
+	"frame": {"x":515,"y":515,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+},
+"old-console-monitor_NH.png":
+{
+	"frame": {"x":515,"y":1029,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "nh_atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":1028,"h":1542},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:eb2fdad67a1e5b2188dc2c02f78830b1:5310dfe57bcfbeb00d2c98e303914d0e:c4dbd5838b6e9cc474e8133abcae9702$"
+}
+}
