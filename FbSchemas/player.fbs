@@ -1,4 +1,11 @@
 namespace Fb;
+<<<<<<< HEAD
+=======
+table Stack {
+  name:string;
+  amt:int;
+}
+>>>>>>> 82d442f (first commit:)
 struct Vec3 {
   x:float;
   y:float;
@@ -18,9 +25,15 @@ table Player {
   level:int;
   health:int;
   max_health:int;
+<<<<<<< HEAD
   phases:[short];
   inventory:[short];
   hotbar:[short];
+=======
+  phases:[int];
+  inventory:[Stack];
+  hotbar:[Stack];
+>>>>>>> 82d442f (first commit:)
 }
 root_type Player;
 

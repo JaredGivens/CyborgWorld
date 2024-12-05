@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://gviycsooitn"]
+
+[ext_resource type="Script" path="res://scripts/ui/inventory/UnitSlots.cs" id="1_yoib4"]
+
+[node name="UnitSlots" type="ScrollContainer"]
+custom_minimum_size = Vector2(0, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+horizontal_scroll_mode = 0
+script = ExtResource("1_yoib4")
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2

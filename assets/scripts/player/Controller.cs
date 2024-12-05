@@ -19,7 +19,11 @@ namespace Player {
     private Save _save;
     public string Uuid = "0";
     private Inventory _inventory;
+<<<<<<< HEAD
     private Control _currentUI;
+=======
+    public Control _currentUI;
+>>>>>>> 82d442f (first commit:)
     private Boolean _stored;
     private AnimationPlayer _animPlayer;
     private Rid _space;
@@ -38,15 +42,21 @@ namespace Player {
       _animPlayer = GetNode<AnimationPlayer>("cyborg/AnimationPlayer");
       _animPlayer.PlaybackDefaultBlendTime = 0.5;
       _cam.Basis = _save.CameraTransform.Basis;
+<<<<<<< HEAD
       _pauseMenu.SetProcessInput(false);
       _inventory.SetProcessInput(false);
       _hotbar.SetProcessInput(false);
+=======
+      _pauseMenu.SetProcess(false);
+      _inventory.SetProcess(false);
+>>>>>>> 82d442f (first commit:)
       _space = GetWorld3D().Space;
       _hotbar.BindStacks(_save.HotbarStacks);
 
       Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
+<<<<<<< HEAD
     private Boolean CloseUI() {
       if (_currentUI == null) {
         return false;
@@ -84,6 +94,50 @@ namespace Player {
         GD.Print(Position);
         ShowControl(_pauseMenu);
       }
+=======
+    private void CloseUI() {
+      //if (_currentUI.HasMethod("UpdateStacks")) {
+      //_currentUI.Call("UpdateStacks");
+      //}
+      _currentUI.SetProcess(false);
+      _currentUI.Visible = false;
+      _currentUI = null;
+      Input.MouseMode = Input.MouseModeEnum.Captured;
+    }
+    private void ToggleUI(Control control) {
+      if (_currentUI == control) {
+        CloseUI();
+        return;
+      }
+      if (_currentUI != null) {
+        CloseUI();
+      }
+      _currentUI = control;
+      control.Visible = true;
+      SetProcess(true);
+      Input.MouseMode = Input.MouseModeEnum.Visible;
+    }
+    public override void _Input(InputEvent @event) {
+      if (Input.MouseMode == Input.MouseModeEnum.Captured &&
+          @event is InputEventMouseMotion mouseMotion) {
+        RotateY(mouseMotion.Relative.X * -_sens);
+        var xRot = mouseMotion.Relative.Y * -_sens;
+        _cam.Rotation = new Vector3(
+          Math.Clamp(_cam.Rotation.X + xRot, -MathF.PI / 2, MathF.PI / 2),
+          0, 0);
+        return;
+      }
+      if (@event.IsActionPressed("ui_cancel")) {
+        if (_currentUI != null) {
+          CloseUI();
+          return;
+        }
+        GD.Print(Position);
+        ToggleUI(_pauseMenu);
+      }
+    }
+    public override void _UnhandledInput(InputEvent @event) {
+>>>>>>> 82d442f (first commit:)
       for (Int32 i = 0; i < 4; ++i) {
         if (@event.IsActionPressed($"slot{i}")) {
           _save.HotbarSelection = i;
@@ -92,12 +146,22 @@ namespace Player {
       }
       if (@event.IsActionPressed("inventory")) {
         _inventory.Populate(_save);
+<<<<<<< HEAD
         ShowControl(_inventory);
         return;
       }
       if (@event.IsActionPressed("interact")) {
         var facing = -_cam.GlobalBasis.Z.Normalized();
         var origin = _cam.GlobalPosition;
+=======
+        ToggleUI(_inventory);
+        return;
+      }
+      if (@event.IsActionPressed("interact")) {
+        var facing = Quaternion * _cam.Quaternion
+          * Vector3.Forward;
+        var origin = Position + _cam.Position;
+>>>>>>> 82d442f (first commit:)
         var ray = PhysicsRayQueryParameters3D
           .Create(origin, facing * 8 + origin);
         var result = PhysicsServer3D.SpaceGetDirectState(_space)
@@ -116,7 +180,11 @@ namespace Player {
         return;
       }
       if (@event.IsActionPressed("use_unit")) {
+<<<<<<< HEAD
         var stack = _hotbar.Units[_save.HotbarSelection].Stack;
+=======
+        var stack = _hotbar.Slots[_save.HotbarSelection].Unit.Stack;
+>>>>>>> 82d442f (first commit:)
         if (stack.Amt == 0) {
           return;
         }
@@ -126,12 +194,20 @@ namespace Player {
         }
         switch (Glob.Units[stack.Id].Type) {
           case UnitType.Block:
+<<<<<<< HEAD
           if (!_cursor.Block.Visible) {
             break;
           }
           using (var cube = Aoe.GetAoe(AoeShape.Sphere)) {
             var tsf = _cursor.Block.GlobalTransform;
             GetParent<Game>().Terrain.ApplySdf(cube, tsf, (Int16)Chunk.BlockId.Scanner);
+=======
+          using (var cube = Aoe.GetAoe(AoeShape.Cube)) {
+            if (_cursor.Block.Visible) {
+              GetParent<Game>().Terrain
+                .ApplySdf(cube, _cursor.Block.GlobalTransform, (Int16)Chunk.BlockId.Scanner);
+            }
+>>>>>>> 82d442f (first commit:)
           }
           break;
         }
@@ -157,11 +233,26 @@ namespace Player {
         return;
       }
     }
+<<<<<<< HEAD
     private void UpdateCursor() {
       var facing = -_cam.GlobalBasis.Z.Normalized();
       var origin = _cam.GlobalPosition;
       var stack = _hotbar.Units[_save.HotbarSelection].Stack;
       _cursor.Update(origin, facing, stack);
+=======
+    private Vector3 MouseGlobPos() {
+      var mouse = GetViewport().GetMousePosition();
+      var mouseFrom = _cam.ProjectRayOrigin(mouse);
+      var mouseTo = _cam.ProjectRayNormal(mouse) * 100;
+      return new Plane(Vector3.Up)
+        .IntersectsRay(mouseFrom, mouseTo) ?? Vector3.Zero;
+    }
+    private void UpdateCursor() {
+      var facing = Quaternion * _cam.Quaternion
+        * Vector3.Forward;
+      var stack = _hotbar.Slots[_save.HotbarSelection].Unit.Stack;
+      _cursor.Update(Position + _cam.Position, facing, stack);
+>>>>>>> 82d442f (first commit:)
 
     }
     private Single _gravity = ProjectSettings
@@ -170,16 +261,25 @@ namespace Player {
       if (_stored) {
         return;
       }
+<<<<<<< HEAD
+=======
+      var mouseGlobPos = MouseGlobPos();
+>>>>>>> 82d442f (first commit:)
       Vector3 velocity = Velocity;
       velocity.Y -= _gravity * (Single)delta;
 
       // Get the input direction and handle the movement/deceleration.
       // As good practice, you should replace UI actions with custom gameplay actions.
       if (Input.IsActionPressed("jump")) {
+<<<<<<< HEAD
         if (Glob.Save.Gamemode == GamemodeEnum.Sandbox || IsOnFloor()) {
           velocity.Y = _hover * (Single)delta;
           _animPlayer.Play("jump");
         }
+=======
+        velocity.Y = _hover * (Single)delta;
+        _animPlayer.Play("jump");
+>>>>>>> 82d442f (first commit:)
       }
       Vector2 inputDir = Input.GetVector("left", "right", "forward", "back");
       Vector3 direction = (Transform.Basis *

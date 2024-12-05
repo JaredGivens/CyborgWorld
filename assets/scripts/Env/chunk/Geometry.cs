@@ -13,7 +13,11 @@ namespace Chunk {
     Colors = 4,
   }
   // NOT THREAD SAFE LOCK BEFORE USE
+<<<<<<< HEAD
   public class Geometry : IDisposable {
+=======
+  public class Geometry {
+>>>>>>> 82d442f (first commit:)
     public const Single Scale = 1;
     public const Int32 Size = 28;
     public const Int32 DimLen = 32;
@@ -40,7 +44,11 @@ namespace Chunk {
         };
     public static DisplayOptions Options;
     public static Vector3I BlockInd(Vector3I block) {
+<<<<<<< HEAD
       return Glob.DivFloor(block, DimLen);
+=======
+      return (Vector3I)(((Vector3)block) / DimLen).Floor();
+>>>>>>> 82d442f (first commit:)
     }
     public static SByte CylinderSdf(Transform3D tsf, Vector3I worldCell) {
 
@@ -259,7 +267,11 @@ namespace Chunk {
         }
       }
     }
+<<<<<<< HEAD
     public void Dispose() {
+=======
+    ~Geometry() {
+>>>>>>> 82d442f (first commit:)
       _arrMesh.ClearSurfaces();
       RenderingServer.FreeRid(_inst);
       PhysicsServer3D.BodySetSpace(_body.GetRid(), new Rid());
