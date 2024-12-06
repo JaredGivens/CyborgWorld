@@ -45,11 +45,7 @@ public partial class Game : Node3D {
           Glob.Save = container._save;
           Glob.SavePath = container._path;
           _saveMenu.Visible = false;
-<<<<<<< HEAD
           _saveMenu.SetProcessInput(false);
-=======
-          _saveMenu.SetProcess(false);
->>>>>>> 82d442f (first commit:)
           _loadingScreen.StartLoading(
               () => (Single)Terrain.LoadedSaves / Chunk.Geometry.MapDimLen3);
           _player = _playerScene.Instantiate<Player.Controller>();
@@ -70,11 +66,7 @@ public partial class Game : Node3D {
       case State.SavingGame:
       if (_loadingScreen.IsFinished()) {
         _saveMenu.Visible = true;
-<<<<<<< HEAD
         _saveMenu.SetProcessInput(true);
-=======
-        _saveMenu.SetProcess(true);
->>>>>>> 82d442f (first commit:)
         _state = State.SaveMenu;
         Terrain = null;
       }

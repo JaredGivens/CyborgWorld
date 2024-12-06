@@ -44,7 +44,7 @@ public partial class UnitGrid : ScrollContainer {
     for (Int32 i = 0; i < SlotAmt; ++i) {
       var icopy = i;
       _units[i].Init((UnitStack)stacks[i], !Droppable, Types, () => {
-        _binding[icopy] = _units[icopy].Stack;
+        _binding[icopy] = (Int16)_units[icopy].Stack;
       });
     }
   }

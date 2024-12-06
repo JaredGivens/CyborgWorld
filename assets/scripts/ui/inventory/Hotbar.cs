@@ -21,7 +21,7 @@ public partial class Hotbar : HBoxContainer {
       var icopy = i;
       Units[i].Init((UnitStack)stacks[i], Mutable,
        UnitType.Item | UnitType.Block | UnitType.Spell, () => {
-         _binding[icopy] = Units[icopy].Stack;
+         _binding[icopy] = (Int16)Units[icopy].Stack;
        });
     }
   }

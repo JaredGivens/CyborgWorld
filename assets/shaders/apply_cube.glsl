@@ -68,9 +68,5 @@ void main() {
 
     bool replace_id = 0 >= old_dist && 0 < new_dist;
     int res_id = ternary(replace_id, old_cell & 0xff00, block_id << 8);
-<<<<<<< HEAD
     cell_buf[ind] = res_norm_dist | res_id;
-=======
-    //cell_buf[ind] = res_norm_dist | res_id;
->>>>>>> 82d442f (first commit:)
 }

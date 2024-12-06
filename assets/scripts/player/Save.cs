@@ -12,33 +12,18 @@ namespace Player {
     public Int32 Level = 1;
     public Int32 Health = 100;
     public Int32 MaxHealth = 100;
-<<<<<<< HEAD
     public Int16[] Phases;
     public Int16[] InventoryStacks;
     public Int16[] HotbarStacks;
-=======
-    public Int32[] Phases;
-    public UnitStack[] InventoryStacks;
-    public UnitStack[] HotbarStacks;
->>>>>>> 82d442f (first commit:)
     public String Uuid;
     private String _path;
     public Int32 HotbarSelection;
     public Save(string uuid) {
       Uuid = uuid;
       _path = $"{Glob.SavePath}/player_data/p.{Uuid}.tres";
-<<<<<<< HEAD
       Phases = new Int16[64];
       InventoryStacks = new Int16[64];
       HotbarStacks = new Int16[4];
-=======
-      Phases = Enumerable.Range(0, 64)
-        .Select(_ => 0).ToArray();
-      InventoryStacks = Enumerable.Range(0, 64)
-        .Select(_ => new UnitStack(0, 0)).ToArray();
-      HotbarStacks = Enumerable.Range(0, 4)
-        .Select(_ => new UnitStack(0, 0)).ToArray();
->>>>>>> 82d442f (first commit:)
       PlayerTransform = new Transform3D(Basis.Identity, Glob.Save.Spawn);
       CameraTransform = Transform3D.Identity;
       Load();
@@ -73,17 +58,8 @@ namespace Player {
         CameraTransform = LoadTransform(player.CameraTransform);
         Velocity = LoadVec(player.Velocity);
         Phases = player.GetPhasesArray();
-<<<<<<< HEAD
         InventoryStacks = player.GetInventoryArray();
         HotbarStacks = player.GetHotbarArray();
-=======
-        for (Int32 i = 0; i < player.InventoryLength; ++i) {
-          InventoryStacks[i] = LoadStack(player.Inventory(i));
-        }
-        for (Int32 i = 0; i < player.HotbarLength; ++i) {
-          HotbarStacks[i] = LoadStack(player.Hotbar(i));
-        }
->>>>>>> 82d442f (first commit:)
       } catch (Exception e) {
         GD.PrintErr($"Failed to load player save: {e}");
       }
@@ -116,10 +92,6 @@ namespace Player {
       dest.Z = src.Z;
     }
     public Offset<Fb.Stack>[] StoreStacks(UnitStack[] stacks) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 82d442f (first commit:)
       return stacks.Select(stack => Fb.Stack.CreateStack(_builder,
            _builder.CreateString(Glob.Units[stack.Id].Name),
            stack.Amt)).ToArray();
@@ -127,15 +99,8 @@ namespace Player {
     public void Store() {
       _builder.Clear();
       var phases = Fb.Player.CreatePhasesVector(_builder, Phases);
-<<<<<<< HEAD
       var inv = Fb.Player.CreateInventoryVector(_builder, InventoryStacks);
       var hotbar = Fb.Player.CreateHotbarVector(_builder, HotbarStacks);
-=======
-      var invStacks = StoreStacks(InventoryStacks);
-      var inv = Fb.Player.CreateInventoryVector(_builder, invStacks);
-      var hotbarStacks = StoreStacks(HotbarStacks);
-      var hotbar = Fb.Player.CreateHotbarVector(_builder, hotbarStacks);
->>>>>>> 82d442f (first commit:)
       Fb.Player.StartPlayer(_builder);
       Fb.Player.AddPlayerTransform(_builder, StoreTsf(PlayerTransform));
       Fb.Player.AddCameraTransform(_builder, StoreTsf(CameraTransform));
