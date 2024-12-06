@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://buy5o7x5ukjbu"]
+[gd_scene load_steps=5 format=3 uid="uid://buy5o7x5ukjbu"]
 
 [ext_resource type="Script" path="res://scripts/player/Cursor.cs" id="1_esfyp"]
+[ext_resource type="Material" uid="uid://dy3vko4ek0k0a" path="res://resources/cursor_material.tres" id="2_2klov"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_83sjg"]
+material = ExtResource("2_2klov")
 radius = 1.0
 height = 2.0
 
@@ -19,3 +21,4 @@ skeleton = NodePath("../Block")
 
 [node name="Block" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_yqdnd")
+surface_material_override/0 = ExtResource("2_2klov")
