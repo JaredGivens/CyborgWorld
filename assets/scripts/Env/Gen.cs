@@ -158,7 +158,7 @@ namespace Chunk {
       Fb.Prefab prefab = _prefabs[pfi];
       var ruinSize = new Vector3I(prefab.Width, prefab.Height, prefab.Depth);
       var ruinDim = ruinSize / Geometry.Size + Vector3I.One * 2;
-      var ruinKey = (Vector3I)((Vector3)_skey / ruinDim).Floor();
+      var ruinKey = Glob.DivFloor(_skey, ruinDim);
       ruinKey.Y = 0;
       var rng = new System.Random(((ruinKey.Z & 255) << 16)
           | ((ruinKey.X & 255) << 8)
@@ -185,7 +185,7 @@ namespace Chunk {
       }
 
       var ruinCell = Glob.Mod(_skey, ruinDim);
-      ruinCell.Y = _skey.Y - (Int32)MathF.Floor((Single)worldY / Geometry.Size);
+      ruinCell.Y = _skey.Y - Glob.DivFloor(worldY, Geometry.Size);
       //GD.PrintS(worldY, ruinCell.Y);
 
       var begin = (begin0 - ruinCell * Geometry.Size).Max(Vector3I.Zero);

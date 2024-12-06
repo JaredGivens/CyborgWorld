@@ -2,9 +2,9 @@ using Godot;
 using System;
 
 public partial class UnitTexture : TextureRect {
-  public bool Mutable;
-  public UnitType Types;
-  //public Action OnDrop;
+  private Boolean _mutable;
+  private UnitType _types;
+  private Action OnChange;
   private UnitStack _stack;
   public UnitStack Stack {
     get => _stack;
@@ -19,9 +19,15 @@ public partial class UnitTexture : TextureRect {
   public override void _Ready() {
     _countLabel = GetNode<Label>("CountLabel");
   }
+  public void Init(UnitStack initialValue, Boolean mutable, UnitType types, Action onChange) {
+    _types = types;
+    _mutable = mutable;
+    OnChange = onChange;
+    Stack = initialValue;
+  }
   public override Variant _GetDragData(Vector2 at_position) {
-    if (_stack.Amt == 0) {
-      return Variant.From<Int16>(0);
+    if (Stack.Amt == 0) {
+      return (Int16)(0);
     }
     var tr = new TextureRect();
     tr.Texture = Texture;
@@ -29,43 +35,46 @@ public partial class UnitTexture : TextureRect {
     tr.CustomMinimumSize = CustomMinimumSize;
     tr.Position = -(CustomMinimumSize / 2);
     SetDragPreview(tr);
-    if (Mutable) {
-      Stack = new UnitStack(_stack.Id, _stack.Amt - 1);
+    if (_mutable) {
+      Stack = new UnitStack(Stack.Id, Stack.Amt - 1);
     }
     _dragged = this;
-    return Variant.From<Int16>((Int16)_stack);
+    return (Int16)Stack;
   }
   private void Update() {
-    if (_stack.Amt == 0) {
+    if (OnChange != null) {
+      OnChange();
+    }
+    if (Stack.Amt == 0) {
       Texture = null;
       TooltipText = "";
       _countLabel.Text = "";
       return;
     }
-    var item = Glob.Units[_stack.Id];
+    var item = Glob.Units[Stack.Id];
     Texture = item.Icon;
     TooltipText = item.Desc;
-    if (_stack.Amt > 1) {
-      _countLabel.Text = _stack.Amt.ToString();
+    if (Stack.Amt > 1) {
+      _countLabel.Text = Stack.Amt.ToString();
     }
   }
   public override bool _CanDropData(Vector2 at_position, Variant data) {
-    //if (()data == 0) {
-    //return false;
-    //}
     var stack = (UnitStack)data;
-    var type = Glob.Units[stack.Id].Type;
-    if ((type & Types) == UnitType.None) {
+    if (stack.Amt == 0) {
       return false;
     }
-    return Mutable;
+    var type = Glob.Units[stack.Id].Type;
+    if ((type & _types) == UnitType.None) {
+      return false;
+    }
+    return _mutable;
   }
   public override void _DropData(Vector2 at_position, Variant data) {
     //if (OnDrop != null) {
     //OnDrop();
     //}
     if (_dragged.Stack.Amt == 1) {
-      _dragged.Stack = _stack;
+      _dragged.Stack = Stack;
     }
     Stack = (UnitStack)data;
   }

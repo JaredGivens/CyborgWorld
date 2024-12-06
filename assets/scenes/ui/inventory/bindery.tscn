@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://brle4r1oxbqsc"]
 
-[ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/unit_slots.tscn" id="1_x105b"]
-[ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/unit_slot_texture.tscn" id="2_60yen"]
-[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/hotbar.tscn" id="3_k0vfw"]
+[ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/inventory/units/unit_grid.tscn" id="1_x105b"]
+[ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/inventory/units/unit_slot_texture.tscn" id="2_60yen"]
+[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/inventory/hotbar.tscn" id="3_k0vfw"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fd58w"]
 
@@ -30,9 +30,8 @@ theme_override_constants/separation = 10
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ItemUnitSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
+[node name="ItemUnitGrid" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
 layout_mode = 2
-script = null
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -41,13 +40,11 @@ layout_mode = 2
 layout_mode = 2
 texture = null
 stretch_mode = 4
-script = null
 
 [node name="SpellSlotTexture2" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_60yen")]
 layout_mode = 2
 texture = null
 stretch_mode = 4
-script = null
 
 [node name="SpellStats" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(256, 0)
@@ -56,13 +53,11 @@ text = "Cooldown:
 Mana Cost:
 "
 
-[node name="PhaseUnitSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
+[node name="PhaseUnitGrid" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
 layout_mode = 2
-script = null
 
-[node name="PhaseBankUnitSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
+[node name="PhaseBankUnitGrid" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("1_x105b")]
 layout_mode = 2
-script = null
 
 [node name="Hotbar" parent="CenterContainer/VBoxContainer" instance=ExtResource("3_k0vfw")]
 layout_mode = 2

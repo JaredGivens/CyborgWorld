@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://curr1cqprp3gl"]
 
-[ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/unit_slot_texture.tscn" id="1_4odkm"]
-[ext_resource type="Script" path="res://scripts/player/Hotbar.cs" id="1_07ocb"]
+[ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/inventory/units/unit_slot_texture.tscn" id="1_4odkm"]
+[ext_resource type="Script" path="res://scripts/ui/inventory/Hotbar.cs" id="1_07ocb"]
 
 [node name="Hotbar" type="HBoxContainer"]
 anchors_preset = 7

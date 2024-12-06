@@ -34,7 +34,7 @@ namespace Chunk {
     [FieldOffset(2)] public SByte Theta;
     [FieldOffset(3)] public Byte Phi;
     public static explicit operator Cell(Int32 i) => new Cell { _int = i };
-    //public static explicit operator Int32(Cell c) => c;
+    public static explicit operator Int32(Cell c) => c._int;
     public void SetNormal(Vector3 n) {
       Single phi = MathF.Acos(n.Y); // z = cos(phi), so phi = acos(z)
       Single theta = MathF.Atan2(n.Z, n.X); // theta = atan2(y, x)
@@ -58,7 +58,7 @@ namespace Chunk {
     public readonly Int16[] Items = new Int16[Geometry.DimLen3 * 16];
     public Durable() { }
   }
-  public class Save {
+  public class Save : IDisposable {
     public const Int32 MapDimLen = 8;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
@@ -71,7 +71,7 @@ namespace Chunk {
     private Area3D _boxArea = new();
     private Int32 Rflat;
     private Vector3I Rkey;
-    private Vector3I Skey = Vector3I.MaxValue;
+    public Vector3I Skey = Vector3I.MaxValue;
     private Gen _gen;
     private Status _status = Status.None;
     private Compute _compute = new();
@@ -116,7 +116,7 @@ namespace Chunk {
       _status |= Status.Loaded;
       Skey = skey;
       Rflat = Glob.ModFlat(Skey, Region.DimLen);
-      Rkey = (Vector3I)((Vector3)Skey / Region.DimLen).Floor();
+      Rkey = Glob.DivFloor(Skey, Region.DimLen);
       var found = false;
       _regionMap[Glob.ModFlat(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
         if (region.HasChunk(Rflat)) {
@@ -147,9 +147,10 @@ namespace Chunk {
         //GD.Print(s2);
       }
       _compute.UpdateCellBuf(Durable.Cells);
-      Transform3D tsf = new Transform3D(
-          Basis.FromScale(Vector3.One * Geometry.Scale),
-         (Vector3.One * 0.5f + Skey) * Geometry.DimLen * Geometry.Scale);
+      var scale = Vector3.One * Geometry.Scale;
+      var origin = (Vector3.One * 0.5f * Geometry.DimLen + Skey * Geometry.Size)
+        * Geometry.Scale;
+      Transform3D tsf = new Transform3D(Basis.FromScale(scale), origin);
       PhysicsServer3D.AreaSetShapeTransform(_boxArea.GetRid(), 0, tsf);
       PhysicsServer3D.AreaSetShapeDisabled(_boxArea.GetRid(), 0, false);
       _rwlock.ExitWriteLock();
@@ -158,10 +159,27 @@ namespace Chunk {
       return this;
 
     }
-    public void ApplySdf(Aoe aoe, Transform3D tsf, Int16 blockId) {
+    public Godot.Collections.Array<RDUniform> GetPUniforms(Transform3D tsf, Int16 blockId) {
+      _compute.UpdateUniformBuf(tsf, Skey * Geometry.Size, blockId);
+      return _compute.PUniforms;
+    }
+    public void ComputeUpdate() {
       _rwlock.EnterWriteLock();
-      var bytes = _compute.ApplySdf(aoe, tsf, Skey * Geometry.Size, blockId);
+      var bytes = _compute.GetCellBuffer();
       Buffer.BlockCopy(bytes, 0, Durable.Cells, 0, Geometry.DimLen3 * sizeof(Int32));
+      var s = "";
+      var s2 = "";
+      for (var i = 0; i < Geometry.DimLen; ++i) {
+        for (var j = 0; j < Geometry.DimLen; ++j) {
+          var c = ((Cell)Durable.Cells[i * Geometry.DimLen + j * Geometry.DimLen2 + 20]);
+          var n = c.GetNormal();
+          s += $"{n.X.ToString("f1")} {n.Y.ToString("f1")} {n.Z.ToString("f1")}|".PadLeft(15);
+          s2 += c.Dist.ToString().PadLeft(4);
+        }
+        s += "\n";
+        s2 += "\n";
+      }
+      GD.Print(s2);
       _rwlock.ExitWriteLock();
       RebuildGeometry();
     }
@@ -206,7 +224,7 @@ namespace Chunk {
       });
     }
 
-    ~Save() {
+    public void Dispose() {
       PhysicsServer3D.AreaSetSpace(_boxArea.GetRid(), new Rid());
     }
   }

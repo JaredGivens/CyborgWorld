@@ -66,8 +66,12 @@ public class Terrain : IDisposable {
       while (RunningTaskCount != 0) {
         Thread.Sleep(128);
       }
+      foreach (var geo in _geometryMap) {
+        geo.Dispose();
+      }
       foreach (var save in _saveMap) {
         save.Store();
+        save.Dispose();
       }
       foreach (var region in _regionMap) {
         region.Use(region => region.Store());
@@ -84,7 +88,7 @@ public class Terrain : IDisposable {
     return geoKeys;
   }
   static Transform3D TsfAddSdfRange(Transform3D tsf) {
-    var newScale = tsf.Basis.Scale + Vector3.One * 128 / Glob.DistFac;
+    var newScale = tsf.Basis.Scale + Vector3.One * Glob.SdfRange;
     return tsf.ScaledLocal(newScale / tsf.Basis.Scale);
   }
   public void ApplySdf(Aoe aoe, Transform3D tsf, Int16 blockId = -1) {
@@ -95,25 +99,26 @@ public class Terrain : IDisposable {
     shapeQuery.CollideWithBodies = false;
     shapeQuery.CollideWithAreas = true;
     var saveAreas = state.IntersectShape(shapeQuery, 16);
-    for (int i = 0; i < saveAreas.Count; ++i) {
-      var rid = (Rid)saveAreas[i]["rid"];
-      if (!Chunk.Save.RidMap.ContainsKey(rid)) {
-        GD.PrintErr($"found {rid} in chunk save areas");
-        continue;
+    GD.Print("using compute", saveAreas.Count);
+    RunTask(() => {
+      var saves = new List<Chunk.Save>();
+      for (int i = 0; i < saveAreas.Count; ++i) {
+        var rid = (Rid)saveAreas[i]["rid"];
+        if (!Chunk.Save.RidMap.ContainsKey(rid)) {
+          GD.PrintErr($"found {rid} in chunk save areas");
+          continue;
+        }
+        saves.Add(Chunk.Save.RidMap[rid]);
       }
-      var save = Chunk.Save.RidMap[rid];
-      RunTask(() => {
-        save.ApplySdf(aoe, tsf, blockId);
-      });
-    }
+      Chunk.Compute.ApplySdf(saves, aoe, tsf, blockId);
+    });
   }
   public (Chunk.BlockId, Int16[]) Interact(Vector3 pos) {
     var gkey = PosGeoKey(pos);
     return _saveMap[Glob.ModFlat(gkey, Chunk.Save.MapDimLen)].Interact(pos);
   }
   Vector3I PosGeoKey(Vector3 p) {
-    p /= Chunk.Geometry.Size * Chunk.Geometry.Scale;
-    return (Vector3I)p.Floor();
+    return Glob.DivFloor(p, Chunk.Geometry.Size * Chunk.Geometry.Scale);
   }
   public void Process(Vector3 pos) {
     var oldKey = PosGeoKey(_position);

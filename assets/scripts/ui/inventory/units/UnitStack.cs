@@ -12,7 +12,6 @@ public struct UnitStack {
     Id = (Byte)id;
     Amt = (Byte)amt;
   }
-  public static explicit operator UnitStack(Int16 i) => new UnitStack { _int = (Int16)i };
   public static explicit operator UnitStack(Variant v) {
     if (v.VariantType == Variant.Type.Int) {
       return new UnitStack { _int = v.AsInt16() };
@@ -21,5 +20,6 @@ public struct UnitStack {
       return new UnitStack();
     }
   }
-  public static explicit operator Int16(UnitStack s) => s._int;
+  public static implicit operator Int16(UnitStack s) => s._int;
+  public static explicit operator UnitStack(Int16 i) => new UnitStack { _int = i };
 };

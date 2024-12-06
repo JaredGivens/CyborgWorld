@@ -1,16 +1,16 @@
 using Godot;
 
 public partial class Bindery : ColorRect {
-  private UnitSlots _bank;
-  private UnitSlots _spell;
-  private UnitSlots _items;
+  private UnitGrid _bank;
+  private UnitGrid _spell;
+  private UnitGrid _items;
   private Label _stats;
   private Hotbar _hotbar;
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
-    _bank = GetNode<UnitSlots>("CenterContainer/VBoxContainer/HBoxContainer/PhaseBankScrollContainer");
-    _spell = GetNode<UnitSlots>("CenterContainer/VBoxContainer/HBoxContainer/PhaseScrollContainer");
-    _items = GetNode<UnitSlots>("CenterContainer/VBoxContainer/HBoxContainer/ItemScrollContainer");
+    _bank = GetNode<UnitGrid>("CenterContainer/VBoxContainer/HBoxContainer/PhaseBankUnitGrid");
+    _spell = GetNode<UnitGrid>("CenterContainer/VBoxContainer/HBoxContainer/PhaseUnitGrid");
+    _items = GetNode<UnitGrid>("CenterContainer/VBoxContainer/HBoxContainer/ItemUnitGrid");
     _hotbar = GetNode<Hotbar>("CenterContainer/VBoxContainer/Hotbar");
     _stats = GetNode<Label>("CenterContainer/VBoxContainer/HBoxContainer/VBoxContainer/SpellStats");
   }
@@ -19,9 +19,5 @@ public partial class Bindery : ColorRect {
     _items.BindStacks(save.InventoryStacks);
     //_spell.SetOnDrop(UpdateSpell);
     _hotbar.BindStacks(save.HotbarStacks);
-  }
-  public void UpdateStacks() {
-    _items.UpdateStacks();
-    _hotbar.UpdateStacks();
   }
 }

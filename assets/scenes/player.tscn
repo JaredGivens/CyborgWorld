@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/player/Controller.cs" id="1_hh8s6"]
 [ext_resource type="PackedScene" uid="uid://c6qlgxdcdp6q5" path="res://scenes/ui/pause_menu.tscn" id="2_8umog"]
-[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/hotbar.tscn" id="3_0qjw1"]
+[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/inventory/hotbar.tscn" id="3_0qjw1"]
 [ext_resource type="PackedScene" uid="uid://buy5o7x5ukjbu" path="res://scenes/cursor.tscn" id="4_xwgps"]
-[ext_resource type="PackedScene" uid="uid://b2b0q7fslawpp" path="res://scenes/ui/inventory.tscn" id="5_xuwur"]
+[ext_resource type="PackedScene" uid="uid://b2b0q7fslawpp" path="res://scenes/ui/inventory/inventory.tscn" id="5_xuwur"]
 [ext_resource type="PackedScene" uid="uid://52owj6dgn1l3" path="res://models/player/cyborg.glb" id="6_nbh5w"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_qtu13"]
@@ -24,23 +24,16 @@ offset_left = -134.0
 offset_top = -91.0
 offset_right = 134.0
 
-[node name="Inventory" parent="." instance=ExtResource("5_xuwur")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 712.0
-offset_top = 557.0
-offset_right = 712.0
-offset_bottom = 648.0
-
 [node name="PauseMenu" parent="." instance=ExtResource("2_8umog")]
+
+[node name="Inventory" parent="." instance=ExtResource("5_xuwur")]
+visible = false
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.994874, 0, 0.101126, 0, 1, 0, -0.101126, 0, 0.994874, 0.482275, 1.79005, -0.0931655)
 current = true
 
 [node name="Cursor" parent="." instance=ExtResource("4_xwgps")]
-visible = false
 
 [node name="cyborg" parent="." instance=ExtResource("6_nbh5w")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)

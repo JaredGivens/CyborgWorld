@@ -1,16 +1,14 @@
 [gd_scene load_steps=6 format=3 uid="uid://b2b0q7fslawpp"]
 
-[ext_resource type="Script" path="res://scripts/player/Inventory.cs" id="1_3pnj7"]
-[ext_resource type="Shader" path="res://shaders/chunk.gdshader" id="1_twe2e"]
-[ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/unit_slots.tscn" id="3_mwipv"]
-[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/hotbar.tscn" id="4_ccaep"]
+[ext_resource type="Script" path="res://scripts/ui/inventory/Inventory.cs" id="1_3pnj7"]
+[ext_resource type="Shader" path="res://shaders/background.gdshader" id="1_4va7o"]
+[ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/inventory/units/unit_grid.tscn" id="3_mwipv"]
+[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/inventory/hotbar.tscn" id="4_ccaep"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tu8gg"]
-render_priority = 0
-shader = ExtResource("1_twe2e")
-shader_parameter/atlas_height = null
-shader_parameter/atlas_width = null
-shader_parameter/chunk_size = null
+shader = ExtResource("1_4va7o")
+shader_parameter/blur = 1.37
+shader_parameter/brightness = 0.711
 
 [node name="Inventory" type="ColorRect"]
 material = SubResource("ShaderMaterial_tu8gg")
@@ -47,3 +45,4 @@ layout_mode = 2
 
 [node name="Hotbar" parent="CenterContainer/VBoxContainer" instance=ExtResource("4_ccaep")]
 layout_mode = 2
+Mutable = true
