@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://curr1cqprp3gl"]
 
 [ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/unit_slot_texture.tscn" id="1_4odkm"]
-[ext_resource type="Script" path="res://scripts/player/Hotbar.cs" id="1_07ocb"]
+[ext_resource type="Script" path="res://scripts/ui/inventory/Hotbar.cs" id="1_ok5s6"]
 
 [node name="Hotbar" type="HBoxContainer"]
 anchors_preset = 7
@@ -14,7 +14,7 @@ offset_top = -40.0
 offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
-script = ExtResource("1_07ocb")
+script = ExtResource("1_ok5s6")
 
 [node name="VBoxContainer0" type="VBoxContainer" parent="."]
 layout_mode = 2
