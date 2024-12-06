@@ -12,3 +12,4 @@ Fb/
 build/
 .cache/
 compile_commands.json
+assets/models/glbs/**/*.png
