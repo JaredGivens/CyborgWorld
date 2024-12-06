@@ -20,6 +20,6 @@ public struct UnitStack {
       return new UnitStack();
     }
   }
-  public static implicit operator Int16(UnitStack s) => s._int;
+  public static explicit operator Int16(UnitStack s) => s._int;
   public static explicit operator UnitStack(Int16 i) => new UnitStack { _int = i };
 };
