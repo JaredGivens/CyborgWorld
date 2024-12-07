@@ -18,6 +18,7 @@ public class Terrain : IDisposable {
     if (Glob.RD == null) {
       var computeThread = new Thread(() => {
         Glob.RD = RenderingServer.CreateLocalRenderingDevice();
+        Chunk.Compute.Init();
       });
       computeThread.Start();
       computeThread.Join();
