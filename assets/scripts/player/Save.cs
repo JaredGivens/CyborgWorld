@@ -38,13 +38,6 @@ namespace Player {
       }
       return Transform3D.Identity;
     }
-    UnitStack LoadStack(Fb.Stack? entry) {
-      if (entry is Fb.Stack stack) {
-        return new UnitStack(Glob.Units.FindIndex(0, Glob.Units.Count,
-              u => u.Name == stack.Name), stack.Amt);
-      }
-      return new UnitStack(0, 0);
-    }
     public void Load() {
       if (!File.Exists(_path)) {
         return;
@@ -90,11 +83,6 @@ namespace Player {
       dest.X = src.X;
       dest.Y = src.Y;
       dest.Z = src.Z;
-    }
-    public Offset<Fb.Stack>[] StoreStacks(UnitStack[] stacks) {
-      return stacks.Select(stack => Fb.Stack.CreateStack(_builder,
-           _builder.CreateString(Glob.Units[stack.Id].Name),
-           stack.Amt)).ToArray();
     }
     public void Store() {
       _builder.Clear();
