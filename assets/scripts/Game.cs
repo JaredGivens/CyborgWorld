@@ -20,6 +20,10 @@ public partial class Game : Node3D {
   Game() {
     LoadUnits();
     Aoe.InitAoes();
+    Chunk.Compute.Init();
+  }
+  ~Game() {
+    Chunk.Compute.Dispose();
   }
   public override void _Ready() {
     _saveMenu = GetNode<SaveMenu>("SaveMenu");

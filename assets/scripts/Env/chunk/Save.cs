@@ -167,19 +167,6 @@ namespace Chunk {
       _rwlock.EnterWriteLock();
       var bytes = _compute.GetCellBuffer();
       Buffer.BlockCopy(bytes, 0, Durable.Cells, 0, Geometry.DimLen3 * sizeof(Int32));
-      var s = "";
-      var s2 = "";
-      for (var i = 0; i < Geometry.DimLen; ++i) {
-        for (var j = 0; j < Geometry.DimLen; ++j) {
-          var c = ((Cell)Durable.Cells[i * Geometry.DimLen + j * Geometry.DimLen2 + 20]);
-          var n = c.GetNormal();
-          s += $"{n.X.ToString("f1")} {n.Y.ToString("f1")} {n.Z.ToString("f1")}|".PadLeft(15);
-          s2 += c.Dist.ToString().PadLeft(4);
-        }
-        s += "\n";
-        s2 += "\n";
-      }
-      GD.Print(s2);
       _rwlock.ExitWriteLock();
       RebuildGeometry();
     }

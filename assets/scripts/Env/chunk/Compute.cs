@@ -6,7 +6,7 @@ namespace Chunk {
   public class Compute {
     static Rid[] _shaders;
     static Rid[] _pipelines;
-    static void Init() {
+    public static void Init() {
       _shaders = new Rid[(Int32)AoeShape.Count];
       _pipelines = new Rid[(Int32)AoeShape.Count];
       for (Int32 i = 0; i < (Int32)AoeShape.Count; ++i) {
@@ -21,16 +21,13 @@ namespace Chunk {
         _pipelines[i] = Glob.RD.ComputePipelineCreate(_shaders[i]);
       }
     }
-    static void Dispose() {
+    public static void Dispose() {
       for (Int32 i = 0; i < (Int32)AoeShape.Count; ++i) {
         Glob.RD.FreeRid(_shaders[i]);
         Glob.RD.FreeRid(_pipelines[i]);
       }
     }
-    static public void ApplySdf(List<Save> saves, Aoe aoe, Transform3D tsf, Int16 blockId) {
-      if (_pipelines == null) {
-        Init();
-      }
+    public static void ApplySdf(List<Save> saves, Aoe aoe, Transform3D tsf, Int16 blockId) {
       var shapei = (Int32)aoe.AoeShape;
       List<Rid> uniformSets = new();
       for (Int32 i = 0; i < saves.Count; ++i) {

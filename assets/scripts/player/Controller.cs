@@ -130,7 +130,7 @@ namespace Player {
             break;
           }
           using (var cube = Aoe.GetAoe(AoeShape.Sphere)) {
-            var tsf = _cursor.Block.GlobalTransform;
+            var tsf = _cursor.Block.GlobalTransform.ScaledLocal(Vector3.One * 8);
             GetParent<Game>().Terrain.ApplySdf(cube, tsf, (Int16)Chunk.BlockId.Scanner);
           }
           break;

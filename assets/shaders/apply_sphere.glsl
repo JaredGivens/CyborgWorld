@@ -45,14 +45,13 @@ int sphere_sdf(vec3 pos) {
     vec4 local_pos4 = u_inv_tsf * vec4(pos, 1.0);
     vec3 local_pos = safe_divide(local_pos4.xyz, local_pos4.w);
     vec3 local_norm = norm_or_up(local_pos);
-    vec3 local_near = local_pos - local_norm;
+    vec3 local_near = local_norm - local_pos;
     vec3 near = u_basis * local_near;
-    vec4 norm4 = transpose(u_inv_tsf) * vec4(local_norm, 1.0);
-    vec3 norm = safe_divide(norm4.xyz, norm4.w);
-    int polar = pack_polar(norm_or_up(norm));
-    float dist = dot(near, norm);
+    vec3 norm = normalize(u_basis * local_norm);
+    int polar = pack_polar(norm);
+    float dist = -dot(near, norm);
 
-    return itob(clamp(int(round(dist * kDistFac)), -127, 127)) & 0xff;
+    return itob(clamp(int(round(dist * kDistFac)), -127, 127));
 }
 
 void main() {
@@ -68,9 +67,9 @@ void main() {
     new_dist = u_block_id == -1 ? -new_dist : new_dist;
     bool replace = (u_block_id != -1 && new_dist < old_dist)
             || (u_block_id == -1 && new_dist > old_dist);
-    int res_norm_dist = itob(replace ? new_norm_dist : old_norm_dist);
+    int res_norm_dist = replace ? new_norm_dist : old_norm_dist;
 
     bool replace_id = 0 < old_dist && 0 > new_dist;
-    int res_id = replace_id ? u_block_id << 8 : old_cell & 0xff00;
-    sb_cells[ind] = res_norm_dist | res_id;
+    int res_id = replace_id ? u_block_id << 8 : (old_cell & 0xff00);
+    sb_cells[ind] = res_norm_dist | res_id; //res_norm_dist | res_id;
 }

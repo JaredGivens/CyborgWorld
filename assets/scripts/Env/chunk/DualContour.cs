@@ -59,7 +59,7 @@ namespace Chunk {
     }
     private void AddBias(Vector3I dcell) {
       var massPoint = dcell + Vector3.One * 0.5f;
-      var biasStrength = 0.125f;
+      var biasStrength = 0.25f;
       _mids.AddRange(Enumerable.Repeat(massPoint, 3));
       _norms.Add(new Vector3(biasStrength, 0, 0));
       _norms.Add(new Vector3(0, biasStrength, 0));
