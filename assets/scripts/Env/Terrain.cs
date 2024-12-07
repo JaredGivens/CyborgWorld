@@ -18,10 +18,10 @@ public class Terrain : IDisposable {
     if (Glob.RD == null) {
       var computeThread = new Thread(() => {
         Glob.RD = RenderingServer.CreateLocalRenderingDevice();
-        Chunk.Compute.Init();
       });
       computeThread.Start();
       computeThread.Join();
+      Chunk.Compute.Init();
     }
     _geometryMap = new Chunk.Geometry[Chunk.Geometry.MapDimLen3];
     _saveMap = new Chunk.Save[Chunk.Save.MapDimLen3];
