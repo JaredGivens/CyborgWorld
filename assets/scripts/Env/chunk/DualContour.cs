@@ -16,8 +16,8 @@ namespace Chunk {
     Vector3 QEF(Vector3I cell) {
       var normMat = Matrix<Single>.Build.DenseOfRowArrays(_norms
                   .Select(v => new Single[] { v.X, v.Y, v.Z }));
+      return _mids.Aggregate((a, v) => a + v) / _mids.Count;
       if (normMat.ConditionNumber() > 10) {
-        return _mids.Aggregate((a, v) => a + v) / _mids.Count;
       }
       var components = Vector<Single>.Build.DenseOfEnumerable(_mids
           .Zip(_norms).Select(pair => pair.First.Dot(pair.Second)));

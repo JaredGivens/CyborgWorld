@@ -6,22 +6,32 @@ namespace Player {
     [Export]
     public Single Speed = 10.0f;
     [Export]
+    public Single TermVel = 100.0f;
+    [Export]
+    public Single Friction = 0.8f;
+    [Export]
+    public Single Acceleration = 1.0f;
+    [Export]
     private Single _sens = 0.01f;
     [Export]
     private Single _hover = 100.0f;
+    [Export]
     private Camera3D _cam;
-
-
-    // Get the gravity from the project settings to be synced with RigidBody nodes.
-    private Cursor _cursor;
+    [Export]
     public PauseMenu _pauseMenu;
+    [Export]
+    private Cursor _cursor;
+    [Export]
     private Hotbar _hotbar;
+    [Export]
+    private Inventory _inventory;
+    [Export]
+    private AnimationTree _animTree;
+
     private Save _save;
     public string Uuid = "0";
-    private Inventory _inventory;
     private Control _currentUI;
     private Boolean _stored;
-    private AnimationPlayer _animPlayer;
     private Rid _space;
     public Controller() : base() {
       _save = new Save(Uuid);
@@ -29,14 +39,7 @@ namespace Player {
       Velocity = _save.Velocity;
     }
     public override void _Ready() {
-      _pauseMenu = GetNode<PauseMenu>("PauseMenu");
       _pauseMenu.Init(GetParent<Game>());
-      _cam = GetNode<Camera3D>("Camera3D");
-      _hotbar = GetNode<Hotbar>("Hotbar");
-      _cursor = GetNode<Cursor>("Cursor");
-      _inventory = GetNode<Inventory>("Inventory");
-      _animPlayer = GetNode<AnimationPlayer>("cyborg/AnimationPlayer");
-      _animPlayer.PlaybackDefaultBlendTime = 0.5;
       _cam.Basis = _save.CameraTransform.Basis;
       _pauseMenu.SetProcessInput(false);
       _inventory.SetProcessInput(false);
@@ -170,7 +173,7 @@ namespace Player {
     }
     private Single _gravity = ProjectSettings
       .GetSetting("physics/3d/default_gravity").AsSingle();
-    public override void _PhysicsProcess(double delta) {
+    public override void _PhysicsProcess(Double delta) {
       if (_stored) {
         return;
       }
@@ -179,37 +182,32 @@ namespace Player {
 
       // Get the input direction and handle the movement/deceleration.
       // As good practice, you should replace UI actions with custom gameplay actions.
+      Vector2 inputDir = Input.GetVector("left", "right", "forward", "back");
+      Vector3 direction = Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y);
+      if (direction != Vector3.Zero) {
+        velocity += (direction * Acceleration);
+      } else if (IsOnFloor()) {
+        velocity.X = Mathf.Lerp(velocity.X, 0.0f, Friction);
+        velocity.Z = Mathf.Lerp(velocity.Z, 0.0f, Friction);
+      }
       if (Input.IsActionPressed("jump")) {
         if (Glob.Save.Gamemode == GamemodeEnum.Sandbox || IsOnFloor()) {
           velocity.Y = _hover * (Single)delta;
-          _animPlayer.Play("jump");
+          _animTree.Set("parameters/Jump/request", (Int32)AnimationNodeOneShot.OneShotRequest.Fire);
         }
       }
-      Vector2 inputDir = Input.GetVector("left", "right", "forward", "back");
-      Vector3 direction = (Transform.Basis *
-          new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-      if (direction != Vector3.Zero) {
-        velocity.X = direction.X * Speed;
-        velocity.Z = direction.Z * Speed;
-      } else {
-        velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-        velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
+      var speedCap = new Vector3(Speed, TermVel, Speed);
+      velocity = velocity.Clamp(-speedCap, speedCap);
+      var animState = "Running";
+      if (!IsOnFloor()) {
+        animState = "Falling";
+      } else if (inputDir == Vector2.Zero) {
+        animState = "Idle";
       }
-      if (Math.Abs(inputDir.X) > Math.Abs(inputDir.Y)) {
-        if (inputDir.X > 0) {
-          _animPlayer.Play("right");
-        } else {
-          _animPlayer.Play("left");
-        }
-      } else if (Math.Abs(inputDir.Y) > Math.Abs(inputDir.X)) {
-        if (inputDir.Y > 0) {
-          _animPlayer.Play("back");
-        } else {
-          _animPlayer.Play("forward");
-        }
-      } else {
-        _animPlayer.Play("idle");
-      }
+
+      _animTree.Set("parameters/Running/blend_position", Transform.Basis.Inverse() * velocity.Normalized());
+      _animTree.Set("parameters/Transition/transition_request", animState);
+
 
       Velocity = velocity;
       MoveAndSlide();
