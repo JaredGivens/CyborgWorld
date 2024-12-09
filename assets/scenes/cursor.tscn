@@ -9,6 +9,7 @@ radius = 1.0
 height = 2.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_yqdnd"]
+material = ExtResource("2_2klov")
 size = Vector3(2, 2, 2)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_is7vl"]

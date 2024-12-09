@@ -24,7 +24,7 @@ public partial class Unit : Resource {
   public UnitType Type;
   //public UnitData data;
   [Export]
-  public AoeShape shape;
+  public AoeShape Shape;
   [Export]
-  public Basis basis;
+  public Basis Basis;
 }

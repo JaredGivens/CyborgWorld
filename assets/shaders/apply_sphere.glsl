@@ -63,13 +63,14 @@ void main() {
     int old_norm_dist = old_cell & 0xffff00ff;
     int old_dist = btoi(old_cell & 0xff);
     int new_norm_dist = sphere_sdf(u_pos.xyz + cell_pos);
+    int new_norm = new_norm_dist & 0xffff0000;
     int new_dist = btoi(new_norm_dist & 0xff);
     new_dist = u_block_id == -1 ? -new_dist : new_dist;
     bool replace = (u_block_id != -1 && new_dist < old_dist)
             || (u_block_id == -1 && new_dist > old_dist);
-    int res_norm_dist = replace ? new_norm_dist : old_norm_dist;
+    int res_norm_dist = replace ? new_norm | itob(new_dist) : old_norm_dist;
 
-    bool replace_id = 0 < old_dist && 0 > new_dist;
+    bool replace_id = u_block_id != -1 && 0 < old_dist && 0 > new_dist;
     int res_id = replace_id ? u_block_id << 8 : (old_cell & 0xff00);
     sb_cells[ind] = res_norm_dist | res_id; //res_norm_dist | res_id;
 }

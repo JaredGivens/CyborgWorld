@@ -1,13 +1,13 @@
-[gd_resource type="Resource" load_steps=3 format=3 uid="uid://dvokqsice3syu"]
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://b5nx7jfp3g7er"]
 
-[ext_resource type="Texture2D" uid="uid://car3xydhbc1k6" path="res://textures/units/ksLOOYgVJROeQH2fDUbFh.png" id="1_6ntok"]
-[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_t165q"]
+[ext_resource type="Texture2D" uid="uid://c4jphqrqtmt0n" path="res://textures/units/visor.png" id="1_yxqxt"]
+[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_a3top"]
 
 [resource]
-script = ExtResource("2_t165q")
-Name = "Jet boots"
-Desc = "block for scanning for chests."
-Icon = ExtResource("1_6ntok")
-Type = 2
+script = ExtResource("2_a3top")
+Name = "Visor"
+Desc = "Prepared spell book"
+Icon = ExtResource("1_yxqxt")
+Type = 8
 shape = 0
 basis = Basis(0, 0, 0, 0, 0, 0, 0, 0, 0)

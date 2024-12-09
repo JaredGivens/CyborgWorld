@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cmkdol1c4q3al"]
+
+[ext_resource type="Shader" path="res://shaders/chunk.gdshader" id="1_nav6b"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nav6b")
+shader_parameter/atlas_height = null
+shader_parameter/atlas_width = null
+shader_parameter/chunk_size = null

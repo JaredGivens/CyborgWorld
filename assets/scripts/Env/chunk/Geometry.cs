@@ -121,9 +121,6 @@ namespace Chunk {
       //}
     }
     public void Rebuild(Vector3I gkey) {
-      if (Gkey == gkey) {
-        return;
-      }
       Gkey = gkey;
       var color = (Vector3)Gkey % 4 / 4;
       _vertFlats.Clear();

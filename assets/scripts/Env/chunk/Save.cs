@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Chunk {
-  public enum BlockId : Byte {
+  public enum BlockId : Int16 {
+    None = -1,
     Grass,
     Cement,
     Stone,
