@@ -6,7 +6,7 @@ public partial class UnitGrid : ScrollContainer {
   static PackedScene _unitSlotTexPacked =
       GD.Load<PackedScene>("res://scenes/ui/inventory/units/unit_slot_texture.tscn");
   [Export]
-  public UnitType Types = UnitType.Spell | UnitType.Item | UnitType.Block;
+  public UnitType Types = UnitType.Spell | UnitType.Item | UnitType.Terraform;
   [Export]
   public bool Droppable = false;
   [Export]
@@ -28,7 +28,7 @@ public partial class UnitGrid : ScrollContainer {
     }
   }
   public void Sandbox() {
-    Types = UnitType.Item | UnitType.Block | UnitType.Phase;
+    Types = UnitType.Item | UnitType.Terraform | UnitType.Phase;
     Droppable = true;
     for (Int32 i = 0; i < Glob.Units.Count; ++i) {
       _units[i].Stack = new UnitStack(i, 1);

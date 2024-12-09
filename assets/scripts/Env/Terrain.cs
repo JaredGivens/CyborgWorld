@@ -56,7 +56,7 @@ public class Terrain : IDisposable {
     LoadedSaves = 0;
     foreach (var key in GeoKeys(PosGeoKey(_position))) {
       RunTask(() => {
-        _saveMap[Glob.ModFlat(key, Chunk.Save.MapDimLen)].StoreLoad(key);
+        _saveMap[Glob.ModFlat2(key, Chunk.Save.MapDimLen)].StoreLoad(key);
         Interlocked.Increment(ref LoadedSaves);
       });
     }
@@ -116,7 +116,7 @@ public class Terrain : IDisposable {
   }
   public (Chunk.BlockId, Int16[]) Interact(Vector3 pos) {
     var gkey = PosGeoKey(pos);
-    return _saveMap[Glob.ModFlat(gkey, Chunk.Save.MapDimLen)].Interact(pos);
+    return _saveMap[Glob.ModFlat2(gkey, Chunk.Save.MapDimLen)].Interact(pos);
   }
   Vector3I PosGeoKey(Vector3 p) {
     return Glob.DivFloor(p, Chunk.Geometry.Size * Chunk.Geometry.Scale);
@@ -130,7 +130,7 @@ public class Terrain : IDisposable {
       _options = Chunk.Geometry.Options;
       foreach (var gkey in gkeys) {
         RunTask(() => {
-          var geo = _geometryMap[Glob.ModFlat(gkey, Chunk.Geometry.MapDimLen)];
+          var geo = _geometryMap[Glob.ModFlat2(gkey, Chunk.Geometry.MapDimLen)];
           geo.Update();
         });
       }
@@ -143,7 +143,7 @@ public class Terrain : IDisposable {
           continue;
         }
         RunTask(() => {
-          var save = _saveMap[Glob.ModFlat(skey, Chunk.Save.MapDimLen)];
+          var save = _saveMap[Glob.ModFlat2(skey, Chunk.Save.MapDimLen)];
           save.StoreLoad(skey);
         });
       }

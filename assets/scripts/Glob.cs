@@ -42,17 +42,29 @@ static class Glob {
   public static void Resize<T>(this List<T> list, Int32 sz) where T : new() {
     Resize(list, sz, new T());
   }
+  public static Int32 DivFloor(Single v, Single d) {
+    return (Int32)MathF.Floor(v / d);
+  }
   public static Vector3I DivFloor(Vector3 v, Single d) {
     return (Vector3I)(v / d).Floor();
   }
   public static Int32 DivFloor(Int32 n, Int32 d) {
     return n - Mod(n, d);
   }
+  public static Int32 DivFloor2(Int32 n, Int32 d) {
+    return n - Mod2(n, d);
+  }
   public static Vector3I DivFloor(Vector3I v, Int32 d) {
     return v - Mod(v, d);
   }
+  public static Vector3I DivFloor2(Vector3I v, Int32 d) {
+    return v - Mod2(v, d);
+  }
   public static Vector3I DivFloor(Vector3I v, Vector3I d) {
     return v - Mod(v, d);
+  }
+  public static Vector3I DivFloor2(Vector3I v, Vector3I d) {
+    return v - Mod2(v, d);
   }
   public static Vector3I Mod(Vector3I v, Vector3I m) {
     var r = v % m;
@@ -61,6 +73,12 @@ static class Glob {
     r.Z = r.Z < 0 ? r.Z + m.Z : r.Z;
     return r;
   }
+  public static Vector3I Mod2(Vector3I v, Vector3I m) {
+    v.X &= m.X - 1;
+    v.Y &= m.Y - 1;
+    v.Z &= m.Z - 1;
+    return v;
+  }
   public static Vector3I Mod(Vector3I v, Int32 m) {
     var r = v % m;
     r.X = r.X < 0 ? r.X + m : r.X;
@@ -68,11 +86,23 @@ static class Glob {
     r.Z = r.Z < 0 ? r.Z + m : r.Z;
     return r;
   }
+  public static Vector3I Mod2(Vector3I v, Int32 m) {
+    v.X &= m - 1;
+    v.Y &= m - 1;
+    v.Z &= m - 1;
+    return v;
+  }
   public static int ModFlat(Vector3I v, Int32 m) {
     return Flat(Mod(v, m), m);
   }
+  public static int ModFlat2(Vector3I v, Int32 m) {
+    return Flat(Mod2(v, m), m);
+  }
+  public static int Mod2(Int32 x, Int32 m) {
+    return x & (m - 1);
+  }
   public static int Mod(Int32 x, Int32 m) {
-    int r = x % m;
+    Int32 r = x % m;
     return r < 0 ? r + m : r;
   }
 }

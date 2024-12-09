@@ -20,7 +20,6 @@ public partial class Game : Node3D {
   Game() {
     LoadUnits();
     Aoe.InitAoes();
-    Chunk.Compute.Init();
   }
   ~Game() {
     Chunk.Compute.Dispose();

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://buy5o7x5ukjbu"]
+[gd_scene load_steps=6 format=3 uid="uid://buy5o7x5ukjbu"]
 
 [ext_resource type="Script" path="res://scripts/player/Cursor.cs" id="1_esfyp"]
 [ext_resource type="Material" uid="uid://dy3vko4ek0k0a" path="res://resources/cursor_material.tres" id="2_2klov"]
@@ -11,14 +11,21 @@ height = 2.0
 [sub_resource type="BoxMesh" id="BoxMesh_yqdnd"]
 size = Vector3(2, 2, 2)
 
-[node name="Cursor" type="Node3D"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_is7vl"]
+top_radius = 1.0
+bottom_radius = 1.0
+
+[node name="Cursor" type="MeshInstance3D"]
 script = ExtResource("1_esfyp")
 
 [node name="Sphere" type="MeshInstance3D" parent="."]
-visible = false
 mesh = SubResource("SphereMesh_83sjg")
-skeleton = NodePath("../Block")
+skeleton = NodePath("../Cube")
 
-[node name="Block" type="MeshInstance3D" parent="."]
+[node name="Cube" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_yqdnd")
+surface_material_override/0 = ExtResource("2_2klov")
+
+[node name="Cylinder" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_is7vl")
 surface_material_override/0 = ExtResource("2_2klov")

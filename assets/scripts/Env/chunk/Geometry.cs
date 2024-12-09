@@ -98,7 +98,7 @@ namespace Chunk {
       return dkey;
     }
     Cell GetCell(Vector3I dcell) {
-      return (Cell)_saveMap[Glob.ModFlat(Skey(Dkey), Save.MapDimLen)]
+      return (Cell)_saveMap[Glob.ModFlat2(Skey(Dkey), Save.MapDimLen)]
         .Durable.Cells[Glob.Flat(dcell, DimLen)];
 
     }
@@ -124,6 +124,9 @@ namespace Chunk {
       //}
     }
     public void Rebuild(Vector3I dkey) {
+      if (Dkey == dkey) {
+        return;
+      }
       Dkey = dkey;
       var color = (Vector3)Dkey % 4 / 4;
       _vertFlats.Clear();
@@ -152,7 +155,7 @@ namespace Chunk {
       }
       if (Options.HasFlag(DisplayOptions.Colors)) {
         _debugMat.AlbedoColor = Color.FromHsv(
-            Glob.ModFlat(Dkey, 2) / 8.0f, 0.5f, 0.6f);
+            Glob.ModFlat2(Dkey, 2) / 8.0f, 0.5f, 0.6f);
       } else {
         _debugMat.AlbedoColor = new Color(1, 0, 1);
       }

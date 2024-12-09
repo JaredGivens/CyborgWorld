@@ -20,7 +20,7 @@ public partial class Hotbar : HBoxContainer {
     for (Int32 i = 0; i < 4; ++i) {
       var icopy = i;
       Units[i].Init((UnitStack)stacks[i], Mutable,
-       UnitType.Item | UnitType.Block | UnitType.Spell, () => {
+       UnitType.Item | UnitType.Terraform | UnitType.Spell, () => {
          _binding[icopy] = (Int16)Units[icopy].Stack;
        });
     }

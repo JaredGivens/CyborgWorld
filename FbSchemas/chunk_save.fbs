@@ -1,6 +1,12 @@
 namespace Fb;
+table Items {
+  count: short;
+  tombstone_count: short;
+  keys: [short];
+  items: [short];
+}
 table ChunkSave {
-  cells:[int];
-  items:[short];
+  cells: [int];
+  items: Items;
 }
 root_type ChunkSave;

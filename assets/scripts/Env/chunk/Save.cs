@@ -55,11 +55,11 @@ namespace Chunk {
   }
   public struct Durable {
     public readonly Int32[] Cells = new Int32[Geometry.DimLen3];
-    public readonly Int16[] Items = new Int16[Geometry.DimLen3 * 16];
+    public readonly ItemMap Items = new();
     public Durable() { }
   }
   public class Save : IDisposable {
-    public const Int32 MapDimLen = 8;
+    public const Int32 MapDimLen = Geometry.MapDimLen * 2;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
     public static Dictionary<Rid, Save> RidMap = new();
@@ -92,59 +92,65 @@ namespace Chunk {
       _gen = new(Glob.Save.Seed);
     }
     public (Chunk.BlockId, Int16[]) Interact(Vector3 pos) {
-      var itemi = Glob.Flat((Vector3I)pos.Floor(), Geometry.DimLen * 16);
-      var celli = Glob.Flat((Vector3I)pos.Floor(), Geometry.DimLen);
+      var cell = Glob.Mod2((Vector3I)pos.Floor(), Geometry.DimLen);
+      var celli = Glob.Flat(cell, Geometry.DimLen);
       Int16[] result = new Int16[16];
-      Array.Copy(Durable.Items, itemi, result, 0, 16);
-      return ((BlockId)((Cell)Durable.Cells[celli]).Id, result);
+      var blockId = (BlockId)((Cell)Durable.Cells[celli]).Id;
+      var durable = Durable.Items[(Int16)celli];
+      return (blockId, result);
+    }
+    public void PrintDists() {
+      //var s = "";
+      //var s1 = "";
+      var s2 = "";
+      for (var i = 0; i < Geometry.DimLen; ++i) {
+        for (var j = 0; j < Geometry.DimLen; ++j) {
+          var c = ((Cell)Durable.Cells[i * Geometry.DimLen + j * Geometry.DimLen2 + 20]);
+          //var n = c.GetNormal();
+          //s += $"{n.X.ToString("f1")} {n.Y.ToString("f1")} {n.Z.ToString("f1")}|".PadLeft(15);
+          //s1 += $"{c.Theta} {c.Phi}|".PadLeft(12);
+          s2 += c.Dist.ToString().PadLeft(4);
+        }
+        //s += "\n";
+        //s1 += "\n";
+        s2 += "\n";
+      }
+      //GD.Print(s);
+      //GD.Print(s1);
+      GD.Print(s2);
     }
 
     public Save StoreLoad(Vector3I skey) {
       _rwlock.EnterReadLock();
       if (Skey == skey) {
         _rwlock.ExitReadLock();
+        RebuildGeometry();
         return this;
       }
       _rwlock.ExitReadLock();
       _rwlock.EnterUpgradeableReadLock();
       if (Skey == skey) {
         _rwlock.ExitUpgradeableReadLock();
+        RebuildGeometry();
         return this;
       }
       _rwlock.EnterWriteLock();
       Store();
       _status |= Status.Loaded;
       Skey = skey;
-      Rflat = Glob.ModFlat(Skey, Region.DimLen);
+      Rflat = Glob.ModFlat2(Skey, Region.DimLen);
       Rkey = Glob.DivFloor(Skey, Region.DimLen);
       var found = false;
-      _regionMap[Glob.ModFlat(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
+      _regionMap[Glob.ModFlat2(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
         if (region.HasChunk(Rflat)) {
           region.GetChunk(Rflat, ref Durable);
+          //PrintDists();
           found = true;
         }
       });
       if (!found) {
         FromPadded(_gen.GenSdf(Skey));
 
-        //var s = "";
-        //var s1 = "";
-        //var s2 = "";
-        //for (var i = 0; i < Geometry.DimLen; ++i) {
-        //for (var j = 0; j < Geometry.DimLen; ++j) {
-        //var c = ((Cell)Cells[i * Geometry.DimLen + j * Geometry.DimLen2 + 20]);
-        //var n = c.Normal();
-        //s += $"{n.X.ToString("f1")} {n.Y.ToString("f1")} {n.Z.ToString("f1")}|".PadLeft(15);
-        //s1 += $"{c.Theta} {c.Phi}|".PadLeft(12);
-        //s2 += c.Dist.ToString().PadLeft(4);
-        //}
-        //s += "\n";
-        //s1 += "\n";
-        //s2 += "\n";
-        //}
-        //GD.Print(s);
-        //GD.Print(s1);
-        //GD.Print(s2);
       }
       _compute.UpdateCellBuf(Durable.Cells);
       var scale = Vector3.One * Geometry.Scale;
@@ -173,7 +179,7 @@ namespace Chunk {
 
     private void RebuildGeometry() {
       _rwlock.EnterReadLock();
-      var disp = _displayMap[Glob.ModFlat(Skey, Geometry.MapDimLen)];
+      var disp = _displayMap[Glob.ModFlat2(Skey, Geometry.MapDimLen)];
       lock (disp) {
         disp.Rebuild(Skey);
       }
@@ -206,7 +212,7 @@ namespace Chunk {
       if (!_status.HasFlag(Status.Loaded)) {
         return;
       }
-      _regionMap[Glob.ModFlat(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
+      _regionMap[Glob.ModFlat2(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
         region.SetChunk(Rflat, ref Durable);
       });
     }

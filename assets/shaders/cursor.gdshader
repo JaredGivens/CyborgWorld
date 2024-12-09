@@ -1,5 +1,5 @@
 shader_type spatial;
-uniform float speed; 
+uniform float speed;
 uniform vec2 direction;
 uniform sampler2D energy : repeat_enable;
 void fragment() {

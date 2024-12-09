@@ -108,7 +108,7 @@ namespace Chunk {
       return fs;
     }
     private Int32 Shard(Int32 rflat) {
-      return Glob.ModFlat(Glob.Unflat(rflat, DimLen), 2); // 2 ** 3 == 8 == _shardCount
+      return Glob.ModFlat2(Glob.Unflat(rflat, DimLen), 2); // 2 ** 3 == 8 == _shardCount
     }
     public void GetChunk(Int32 rflat, ref Durable durable) {
       if (_mmf == null) {
@@ -131,6 +131,9 @@ namespace Chunk {
       var bb = new ByteBuffer(buf);
       var chunk = Fb.ChunkSave.GetRootAsChunkSave(bb);
       chunk.GetCellsArray().CopyTo(durable.Cells, 0);
+      if (chunk.Items is Fb.Items items) {
+        durable.Items.FromFb(items);
+      }
     }
     Location AddLocation(Int32 rflat, Int32 shard, Int16 pageCount) {
       for (Int16 i = 0; i < _bitArrayCount; ++i) {
@@ -201,9 +204,9 @@ namespace Chunk {
       if (_mmf == null) {
         return;
       }
-      var fbb = new FlatBufferBuilder(new ByteBuffer(_pageBytes));
+      var fbb = new FlatBufferBuilder(new ByteBuffer(Geometry.DimLen3));
       var cellsVector = Fb.ChunkSave.CreateCellsVector(fbb, durable.Cells);
-      var itemsVector = Fb.ChunkSave.CreateItemsVector(fbb, durable.Items);
+      var itemsVector = durable.Items.BuildFb(fbb);
       Fb.ChunkSave.StartChunkSave(fbb);
       Fb.ChunkSave.AddCells(fbb, cellsVector);
       Fb.ChunkSave.AddItems(fbb, itemsVector);

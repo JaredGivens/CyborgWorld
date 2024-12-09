@@ -96,6 +96,7 @@ namespace Player {
         return;
       }
       if (@event.IsActionPressed("interact")) {
+        GD.Print("here");
         var facing = -_cam.GlobalBasis.Z.Normalized();
         var origin = _cam.GlobalPosition;
         var ray = PhysicsRayQueryParameters3D
@@ -106,7 +107,8 @@ namespace Player {
           return;
         }
         var pos = (Vector3)result["position"];
-        var res = GetParent<Game>().Terrain.Interact(pos);
+        var (id, stacks) = GetParent<Game>().Terrain.Interact(pos);
+        GD.Print(id);
         //ToggleUI(inv
 
         return;
@@ -125,12 +127,12 @@ namespace Player {
           return;
         }
         switch (Glob.Units[stack.Id].Type) {
-          case UnitType.Block:
-          if (!_cursor.Block.Visible) {
+          case UnitType.Terraform:
+          if (!_cursor.Visible) {
             break;
           }
           using (var cube = Aoe.GetAoe(AoeShape.Sphere)) {
-            var tsf = _cursor.Block.GlobalTransform.ScaledLocal(Vector3.One * 8);
+            var tsf = _cursor.GlobalTransform.ScaledLocal(Vector3.One * 8);
             GetParent<Game>().Terrain.ApplySdf(cube, tsf, (Int16)Chunk.BlockId.Scanner);
           }
           break;
