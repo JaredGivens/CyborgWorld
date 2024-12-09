@@ -8,6 +8,7 @@ static class Glob {
   public static RenderingDevice RD;
   public const sbyte DistFac = 8;
   public const sbyte SdfRange = 128 / DistFac;
+  public const Int32 LoadDist = 10;
   public static World.Save Save;
   public static List<Unit> Units;
   public static string SavePath;

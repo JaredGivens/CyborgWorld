@@ -107,8 +107,10 @@ namespace Player {
           return;
         }
         var pos = (Vector3)result["position"];
-        var (id, stacks) = GetParent<Game>().Terrain.Interact(pos);
-        GD.Print(id);
+        var res = GetParent<Game>().Terrain.Interact(pos);
+        if (res is (Chunk.BlockId id, Memory<Int16> items)) {
+          GD.Print(id);
+        }
         //ToggleUI(inv
 
         return;

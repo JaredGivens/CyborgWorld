@@ -24,7 +24,32 @@ else:
 DIST_FAC = 8
 SDF_RANGE = 128 // DIST_FAC
 SCALE = 2
+def is_inside(ray_origin: Vector, obj: bpy.types.Object):
 
+    # the matrix multiplations and inversions are only needed if you
+    # have unapplied transforms, else they could be dropped. but it's handy
+    # to have the algorithm take them into account, for generality.
+    ray_direction = Vector((1, 0, 0))
+    hit, loc, normal, face_idx = obj.ray_cast(ray_origin, ray_direction)
+
+    if not hit:
+        return False
+    
+    max_expected_intersections = 1000
+    fudge_distance = 0.0001
+    
+    i = 1
+    while (face_idx != -1):
+        
+        loc += ray_direction * fudge_distance;    
+        hit, loc, normal, face_idx = obj.ray_cast(loc,  ray_direction)
+        if not hit:
+            break
+        i += 1
+        if i > max_expected_intersections:
+            break
+
+    return (i & 1) == 1
 
 BVHTreeList = list[tuple[BVHTree, bpy.types.Object]]
 def find_signed_distance(point: Vector, bvh_data: BVHTreeList):

@@ -50,7 +50,7 @@ public partial class Game : Node3D {
           _saveMenu.Visible = false;
           _saveMenu.SetProcessInput(false);
           _loadingScreen.StartLoading(
-              () => (Single)Terrain.LoadedSaves / Chunk.Geometry.MapDimLen3);
+              () => (Single)Terrain.LoadedSaves / MathF.Pow(Glob.LoadDist, 3));
           _player = _playerScene.Instantiate<Player.Controller>();
           Terrain.Load(_player.Position);
           _state = State.LoadingGame;

@@ -81,10 +81,14 @@ public class Terrain : IDisposable {
   }
   List<Vector3I> GeoKeys(Vector3I dkey0) {
     List<Vector3I> geoKeys = new();
-    for (Int32 i = 0; i < Chunk.Geometry.MapDimLen3; ++i) {
-      var dkey1 = Glob.Unflat(i, Chunk.Geometry.MapDimLen)
-        - (Vector3I.One * (Chunk.Geometry.MapDimLen / 2));
-      geoKeys.Add(dkey1 + dkey0);
+    for (Int32 i = 0; i < Glob.LoadDist; ++i) {
+      for (Int32 j = 0; j < Glob.LoadDist; ++j) {
+        for (Int32 k = 0; k < Glob.LoadDist; ++k) {
+          var dkey1 = new Vector3I(i, j, k)
+          - (Vector3I.One * (Glob.LoadDist / 2));
+          geoKeys.Add(dkey1 + dkey0);
+        }
+      }
     }
     return geoKeys;
   }
@@ -114,7 +118,7 @@ public class Terrain : IDisposable {
       Chunk.Compute.ApplySdf(saves, aoe, tsf, blockId);
     });
   }
-  public (Chunk.BlockId, Int16[]) Interact(Vector3 pos) {
+  public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3 pos) {
     var gkey = PosGeoKey(pos);
     return _saveMap[Glob.ModFlat2(gkey, Chunk.Save.MapDimLen)].Interact(pos);
   }

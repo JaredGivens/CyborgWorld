@@ -14,44 +14,49 @@ namespace Chunk {
     public ItemMap() {
       _tombstoneCount = 0;
       Count = 0;
-      Keys = new Int16[4];
-      Items = new Int16[4 * 16];
+      Keys = new Int16[8];
+      Array.Fill(Keys, (Int16)Status.Empty);
+      Items = new Int16[8 * 16];
     }
-    public Span<Int16> this[Int16 key] {
+    public Memory<Int16> this[Int16 key] {
       get {
         var res = KeyIndexOf(key);
         if (res < 0) {
           throw new IndexOutOfRangeException();
         }
-        return Items.AsSpan(res * 16, 16);
+        return Items.AsMemory(res * 16, 16);
       }
       set {
         var res = KeyIndexOf(key);
         if (Keys[res] < 0) {
-          if (Keys.Length != Int16.MaxValue && Count >= Keys.Length * 0.75f) {
+          if (Keys.Length != Int16.MaxValue && Count >= Keys.Length * 0.5f) {
             Rehash();
             res = KeyIndexOf(key);
           }
-          value.CopyTo(Items.AsSpan(res * 16, 16));
+          value.CopyTo(Items.AsMemory(res * 16, 16));
           Keys[res] = key;
+          ++Count;
         } else {
-          value.CopyTo(Items.AsSpan(res * 16, 16));
+          value.CopyTo(Items.AsMemory(res * 16, 16));
         }
       }
     }
+
     void Remove(Int16 key) {
       var res = KeyIndexOf(key);
       if (Keys[res] > 0) {
         Keys[res] = (Int16)Status.Tombstone;
+        --Count;
         if (++_tombstoneCount >= Keys.Length * 0.25) {
           Rehash();
         }
       }
     }
     private Int16 KeyIndexOf(Int16 key) {
-      var hashKey = (Int16)Glob.Mod2(key, Keys.Length);
+      Int16 hashKey = (Int16)Glob.Mod2(key, Keys.Length);
       Int16 tombstoneIndex = -1;
-      for (Int32 i = 1; i < Keys.Length; ++i) {
+      for (Int32 i = 0; i < Keys.Length; ++i) {
+        hashKey = (Int16)Glob.Mod2(hashKey + i * i, Keys.Length);
         if (Keys[hashKey] == (Int16)Status.Empty) {
           return tombstoneIndex == -1 ? hashKey : tombstoneIndex;
         } else if (tombstoneIndex == -1 && Keys[hashKey] == (Int16)Status.Tombstone) {
@@ -59,12 +64,12 @@ namespace Chunk {
         } else if (Keys[hashKey] == key) {
           return hashKey;
         }
-        hashKey = (Int16)Glob.Mod2(hashKey + i * i, Keys.Length);
       }
-      throw new IndexOutOfRangeException();
+      Rehash();
+      return KeyIndexOf(key);
     }
     private void Rehash() {
-      Int16 newCapacity = (Int16)(Keys.Length << Glob.DivFloor(Count, Keys.Length * 0.75f));
+      Int16 newCapacity = (Int16)(Keys.Length << Glob.DivFloor(Count, Keys.Length * 0.5f));
       Int16[] oldKeys = Keys;
       Int16[] oldItems = Items;
       Keys = new Int16[newCapacity];
@@ -74,7 +79,7 @@ namespace Chunk {
       _tombstoneCount = 0;
       for (Int32 i = 0; i < oldKeys.Length; i++) {
         if (oldKeys[i] >= 0) {
-          this[oldKeys[i]] = oldItems.AsSpan(i * 16, 16);
+          this[oldKeys[i]] = oldItems.AsMemory(i * 16, 16);
         }
       }
     }

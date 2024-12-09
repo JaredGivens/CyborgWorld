@@ -219,6 +219,9 @@ namespace Chunk {
         }
         ms.Position = 0;
         var pageCount = (Int16)Math.Ceiling((Single)ms.Length / _pageBytes);
+        if (pageCount < 1) {
+          GD.Print("bad page Count");
+        }
         var shard = Shard(rflat);
         var loc = UpdateLocation(rflat, shard, pageCount);
         using (var vs = ChunkView(shard, loc)) {

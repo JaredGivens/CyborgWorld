@@ -19,7 +19,7 @@ namespace Chunk {
     public const Int32 DimLen = 32;
     public const Int32 DimLen2 = DimLen * DimLen;
     public const Int32 DimLen3 = DimLen2 * DimLen;
-    public const Int32 MapDimLen = 8;
+    public const Int32 MapDimLen = 16;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
     private static Int32[] _inQuadIndOffsets = {
@@ -64,7 +64,7 @@ namespace Chunk {
     }
     private StandardMaterial3D _debugMat = new();
     private Save[] _saveMap;
-    public Vector3I Dkey = Vector3I.MaxValue;
+    public Vector3I Gkey = Vector3I.MaxValue;
     private List<Int32> _vertFlats = new();
     private List<Vector3> _cellVerts = new();
     private List<Vector3> _verts = new();
@@ -94,13 +94,10 @@ namespace Chunk {
           RenderingServer.ShadowCastingSetting.Off);
       PhysicsServer3D.BodySetSpace(_body.GetRid(), space);
     }
-    public static Vector3I Skey(Vector3I dkey) {
-      return dkey;
-    }
+    public static Vector3I Skey(Vector3I gkey) { return gkey; }
     Cell GetCell(Vector3I dcell) {
-      return (Cell)_saveMap[Glob.ModFlat2(Skey(Dkey), Save.MapDimLen)]
+      return (Cell)_saveMap[Glob.ModFlat2(Skey(Gkey), Save.MapDimLen)]
         .Durable.Cells[Glob.Flat(dcell, DimLen)];
-
     }
     public void AddVertices() {
       var verts = new List<Vector3>();
@@ -108,7 +105,7 @@ namespace Chunk {
         for (Int32 j = 1; j < DimLen - 2; ++j) {
           for (Int32 k = 1; k < DimLen - 2; ++k) {
             var dcell = new Vector3I(i, j, k);
-            var res = _dualContour.ComputeVert(dcell, Dkey);
+            var res = _dualContour.ComputeVert(dcell, Gkey);
             //if (Options.HasFlag(DisplayOptions.Normals)) {
             _dualContour.AddDebug(verts);
             //}
@@ -123,12 +120,12 @@ namespace Chunk {
       _normalVertBufs[(Int32)Mesh.ArrayType.Vertex] = verts.ToArray();
       //}
     }
-    public void Rebuild(Vector3I dkey) {
-      if (Dkey == dkey) {
+    public void Rebuild(Vector3I gkey) {
+      if (Gkey == gkey) {
         return;
       }
-      Dkey = dkey;
-      var color = (Vector3)Dkey % 4 / 4;
+      Gkey = gkey;
+      var color = (Vector3)Gkey % 4 / 4;
       _vertFlats.Clear();
       _cellVerts.Clear();
       _verts.Clear();
@@ -155,14 +152,14 @@ namespace Chunk {
       }
       if (Options.HasFlag(DisplayOptions.Colors)) {
         _debugMat.AlbedoColor = Color.FromHsv(
-            Glob.ModFlat2(Dkey, 2) / 8.0f, 0.5f, 0.6f);
+            Glob.ModFlat2(Gkey, 2) / 8.0f, 0.5f, 0.6f);
       } else {
         _debugMat.AlbedoColor = new Color(1, 0, 1);
       }
       RenderingServer.InstanceSetVisible(_inst, true);
       Transform3D tsf = new Transform3D(
           Basis.FromScale(Vector3.One * Scale),
-         (Vector3)Dkey * Size * Scale);
+         (Vector3)Gkey * Size * Scale);
       RenderingServer.InstanceSetTransform(_inst, tsf);
       _vertBufs[(Int32)Mesh.ArrayType.Normal] = _norms.ToArray();
       _vertBufs[(Int32)Mesh.ArrayType.Vertex] = _verts.ToArray();

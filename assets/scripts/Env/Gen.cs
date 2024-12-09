@@ -39,16 +39,18 @@ namespace Chunk {
         return;
       }
       _prefabs = new Fb.Prefab[(Int32)Prefabs.Count];
+      Fb.Prefab pf = new();
       for (Int32 i = 0; i < _prefabFiles.Length; ++i) {
-        _prefabs[i] = Fb.Prefab.GetRootAsPrefab(
+        pf = _prefabs[i] = Fb.Prefab.GetRootAsPrefab(
             new ByteBuffer(FileAccess.GetFileAsBytes(_prefabFiles[i])));
       }
       //var s = "";
       //for (Int32 k = 0; k < pf.Depth; ++k) {
       //for (Int32 i = pf.Height - 1; i > -1; --i) {
       //for (Int32 j = 0; j < pf.Width; ++j) {
-      //var c = ((Cell)pf.Cells(j * pf.Height * pf.Depth + i * pf.Depth + k)).GetNormal();
+      //var c = ((Cell)pf.Cells(j * pf.Height * pf.Depth + i * pf.Depth + k));
       //s += $"{c.X.ToString("f1")} {c.Y.ToString("f1")} {c.Z.ToString("f1")}|".ToString().PadLeft(15);
+      //s += $"{c.Dist}".PadLeft(4);
       //}
       //s += '\n';
       //}
@@ -124,7 +126,10 @@ namespace Chunk {
       Glob.RD.FreeRid(_noiseBuf);
     }
 
-    public Cell[] GenSdf(Vector3I skey) {
+    void FromPadded(Cell[] paddedCells) {
+    }
+
+    public void GenSdf(Vector3I skey, ref Durable durable) {
       _skey = skey;
       _pos = skey * Geometry.Size;
       for (Int32 i = 0; i < _cells.Length; ++i) {
@@ -140,6 +145,7 @@ namespace Chunk {
         var v0 = Glob.Unflat(i, CDimLen);
         if (_cells[i].Dist == SByte.MinValue) {
           //n += 1;
+          //GD.Print(Count);
           var s = Math.Sign(_noise[Glob.Flat(v0 + Vector3I.One, NDimLen)]);
           _cells[i].Dist = (SByte)(SByte.MaxValue * s);
         }
@@ -148,13 +154,20 @@ namespace Chunk {
       //GD.PrintS("filled", n);
       //}
       for (Int32 i = 1; i < _prefabs.Length; ++i) {
-        if (GenPrefab(i)) {
+        if (GenPrefab(i, ref durable)) {
           break;
         }
       }
-      return _cells;
+      unsafe {
+        fixed (Cell* src = _cells)
+        fixed (Int32* dest = durable.Cells) {
+          Buffer.MemoryCopy(src, dest,
+              Geometry.DimLen3 * sizeof(Int32),
+              Geometry.DimLen3 * sizeof(Int32));
+        }
+      }
     }
-    Boolean GenPrefab(Int32 pfi) {
+    Boolean GenPrefab(Int32 pfi, ref Durable durable) {
       Fb.Prefab prefab = _prefabs[pfi];
       var ruinSize = new Vector3I(prefab.Width, prefab.Height, prefab.Depth);
       var ruinDim = ruinSize / Geometry.Size + Vector3I.One * 2;
@@ -201,11 +214,20 @@ namespace Chunk {
             var old = _cells[ci];
             if (old.Dist == -128 || (0 < old.Dist && old.Dist > ((Cell)prefab.Cells(pfci)).Dist)) {
               _cells[ci] = (Cell)prefab.Cells(pfci);
+
+              if (_cells[ci].Id == (Byte)BlockId.Chest) {
+                durable.Items[(Int16)ci] = GenLoot(rng);
+              }
             }
           }
         }
       }
       return true;
+    }
+    Int16[] GenLoot(Random rng) {
+      var loot = new Int16[16];
+      loot[rng.Next(0, 16)] = (Int16)new UnitStack(rng.Next(0, Glob.Units.Count), 1);
+      return loot;
     }
 
     Single ComputeHeight(Vector3I worldCell) {

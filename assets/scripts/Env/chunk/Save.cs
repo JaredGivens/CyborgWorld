@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Chunk {
-  public enum BlockId {
+  public enum BlockId : Byte {
     Grass,
     Cement,
     Stone,
@@ -13,6 +13,11 @@ namespace Chunk {
     Dirt,
     Chest,
     Count,
+  }
+  [Flags]
+  public enum BlockProp {
+    None = 0,
+    Inventory = 1,
   }
   public enum BlockMapping {
     Uniform,
@@ -55,17 +60,20 @@ namespace Chunk {
   }
   public struct Durable {
     public readonly Int32[] Cells = new Int32[Geometry.DimLen3];
-    public readonly ItemMap Items = new();
+    public ItemMap Items = new();
     public Durable() { }
   }
   public class Save : IDisposable {
-    public const Int32 MapDimLen = Geometry.MapDimLen * 2;
+    public static BlockProp[] BlockProps = new BlockProp[(Int32)BlockId.Count];
+    public const Int32 MapDimLen = Geometry.MapDimLen;//* 2;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
     public static Dictionary<Rid, Save> RidMap = new();
     private BoxShape3D _boxShape = new();
     private readonly ReaderWriterLockSlim _rwlock = new();
-    public Durable Durable = new();
+    private readonly Durable[] _durables = new Durable[2];
+    private Int32 _durableI = 0;
+    public Durable Durable => _durables[_durableI];
     private RegionHandle[] _regionMap;
     private Geometry[] _displayMap;
     private Area3D _boxArea = new();
@@ -75,7 +83,20 @@ namespace Chunk {
     private Gen _gen;
     private Status _status = Status.None;
     private Compute _compute = new();
+    void Init() {
+      BlockProps[(Int32)BlockId.Dirt] = BlockProp.Inventory;
+      BlockProps[(Int32)BlockId.Grass] = BlockProp.None;
+      BlockProps[(Int32)BlockId.Stone] = BlockProp.None;
+      BlockProps[(Int32)BlockId.Cement] = BlockProp.None;
+      BlockProps[(Int32)BlockId.Scanner] = BlockProp.None;
+
+    }
     public Save(RegionHandle[] regionMap, Geometry[] displayMap, Rid space) {
+      if (BlockProps == null) {
+        Init();
+      }
+      _durables[0] = new();
+      _durables[1] = new();
       _regionMap = regionMap;
       _displayMap = displayMap;
       _boxArea.Monitoring = false;
@@ -91,12 +112,12 @@ namespace Chunk {
     public void Load() {
       _gen = new(Glob.Save.Seed);
     }
-    public (Chunk.BlockId, Int16[]) Interact(Vector3 pos) {
+    public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3 pos) {
       var cell = Glob.Mod2((Vector3I)pos.Floor(), Geometry.DimLen);
       var celli = Glob.Flat(cell, Geometry.DimLen);
       Int16[] result = new Int16[16];
       var blockId = (BlockId)((Cell)Durable.Cells[celli]).Id;
-      var durable = Durable.Items[(Int16)celli];
+      var items = Durable.Items[(Int16)celli];
       return (blockId, result);
     }
     public void PrintDists() {
@@ -122,48 +143,56 @@ namespace Chunk {
 
     public Save StoreLoad(Vector3I skey) {
       _rwlock.EnterReadLock();
-      if (Skey == skey) {
-        _rwlock.ExitReadLock();
-        RebuildGeometry();
-        return this;
-      }
-      _rwlock.ExitReadLock();
-      _rwlock.EnterUpgradeableReadLock();
-      if (Skey == skey) {
-        _rwlock.ExitUpgradeableReadLock();
-        RebuildGeometry();
-        return this;
-      }
-      _rwlock.EnterWriteLock();
-      Store();
-      _status |= Status.Loaded;
-      Skey = skey;
-      Rflat = Glob.ModFlat2(Skey, Region.DimLen);
-      Rkey = Glob.DivFloor(Skey, Region.DimLen);
-      var found = false;
-      _regionMap[Glob.ModFlat2(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
-        if (region.HasChunk(Rflat)) {
-          region.GetChunk(Rflat, ref Durable);
-          //PrintDists();
-          found = true;
+      try {
+        if (Skey == skey) {
+          return this;
         }
-      });
-      if (!found) {
-        FromPadded(_gen.GenSdf(Skey));
-
+      } catch { throw; } finally {
+        _rwlock.ExitReadLock();
       }
-      _compute.UpdateCellBuf(Durable.Cells);
-      var scale = Vector3.One * Geometry.Scale;
-      var origin = (Vector3.One * 0.5f * Geometry.DimLen + Skey * Geometry.Size)
-        * Geometry.Scale;
-      Transform3D tsf = new Transform3D(Basis.FromScale(scale), origin);
-      PhysicsServer3D.AreaSetShapeTransform(_boxArea.GetRid(), 0, tsf);
-      PhysicsServer3D.AreaSetShapeDisabled(_boxArea.GetRid(), 0, false);
-      _rwlock.ExitWriteLock();
-      _rwlock.ExitUpgradeableReadLock();
-      RebuildGeometry();
-      return this;
+      _rwlock.EnterUpgradeableReadLock();
+      try {
+        if (Skey == skey) {
+          return this;
+        }
+        Store();
+        var rflat = Glob.ModFlat2(skey, Region.DimLen);
+        var rkey = Glob.DivFloor(skey, Region.DimLen);
+        var found = false;
+        _durables[_durableI ^ 1].Items = new();
+        _regionMap[Glob.ModFlat2(rkey, Region.MapDimLen)].StoreLoad(rkey, region => {
+          if (region.HasChunk(rflat)) {
+            region.GetChunk(rflat, ref _durables[_durableI ^ 1]);
+            //PrintDists();
+            found = true;
+          }
+        });
+        if (!found) {
+          _gen.GenSdf(skey, ref _durables[_durableI ^ 1]);
+        }
+        _rwlock.EnterWriteLock();
+        try {
+          _status |= Status.Loaded;
+          Skey = skey;
+          Rkey = rkey;
+          Rflat = rflat;
+          _durableI ^= 1;
+          _compute.UpdateCellBuf(Durable.Cells);
+          var scale = Vector3.One * Geometry.Scale;
+          var origin = (Vector3.One * 0.5f * Geometry.DimLen + Skey * Geometry.Size)
+            * Geometry.Scale;
+          Transform3D tsf = new Transform3D(Basis.FromScale(scale), origin);
+          PhysicsServer3D.AreaSetShapeTransform(_boxArea.GetRid(), 0, tsf);
+          PhysicsServer3D.AreaSetShapeDisabled(_boxArea.GetRid(), 0, false);
+        } catch { throw; } finally {
+          RebuildGeometry();
+          _rwlock.ExitWriteLock();
+        }
+      } catch { throw; } finally {
+        _rwlock.ExitUpgradeableReadLock();
+      }
 
+      return this;
     }
     public Godot.Collections.Array<RDUniform> GetPUniforms(Transform3D tsf, Int16 blockId) {
       _compute.UpdateUniformBuf(tsf, Skey * Geometry.Size, blockId);
@@ -173,36 +202,24 @@ namespace Chunk {
       _rwlock.EnterWriteLock();
       var bytes = _compute.GetCellBuffer();
       Buffer.BlockCopy(bytes, 0, Durable.Cells, 0, Geometry.DimLen3 * sizeof(Int32));
-      _rwlock.ExitWriteLock();
       RebuildGeometry();
+      _rwlock.ExitWriteLock();
     }
 
     private void RebuildGeometry() {
-      _rwlock.EnterReadLock();
       var disp = _displayMap[Glob.ModFlat2(Skey, Geometry.MapDimLen)];
       lock (disp) {
         disp.Rebuild(Skey);
       }
-      _rwlock.ExitReadLock();
     }
 
-    void FromPadded(Cell[] paddedCells) {
-      unsafe {
-        fixed (Cell* src = paddedCells)
-        fixed (int* dest = Durable.Cells) {
-          Buffer.MemoryCopy(src, dest,
-              Geometry.DimLen3 * sizeof(Int32),
-              Geometry.DimLen3 * sizeof(Int32));
-        }
-      }
-    }
     void FromPadded(Byte[] paddedCells) {
       for (Int32 i = 0; i < Geometry.DimLen; ++i) {
         for (Int32 j = 0; j < Geometry.DimLen; ++j) {
           Buffer.BlockCopy(paddedCells,
               (Gen.CDimLen2 * (Glob.SdfRange + i)
               + Gen.CDimLen * (Glob.SdfRange + j) + Glob.SdfRange) * sizeof(Int32),
-              Durable.Cells, (Geometry.DimLen2 * i + Geometry.DimLen * j) * sizeof(Int32),
+              _durables[_durableI].Cells, (Geometry.DimLen2 * i + Geometry.DimLen * j) * sizeof(Int32),
               Geometry.DimLen * sizeof(Int32));
         }
       }
@@ -213,7 +230,7 @@ namespace Chunk {
         return;
       }
       _regionMap[Glob.ModFlat2(Rkey, Region.MapDimLen)].StoreLoad(Rkey, region => {
-        region.SetChunk(Rflat, ref Durable);
+        region.SetChunk(Rflat, ref _durables[_durableI]);
       });
     }
 
