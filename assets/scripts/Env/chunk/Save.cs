@@ -8,10 +8,10 @@ namespace Chunk {
   public enum BlockId : Int16 {
     None = -1,
     Grass,
-    Cement,
+    Dirt,
     Stone,
     Scanner,
-    Dirt,
+    Cement,
     Chest,
     Count,
   }
@@ -113,8 +113,9 @@ namespace Chunk {
     public void Load() {
       _gen = new(Glob.Save.Seed);
     }
-    public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3 pos) {
-      var cell = Glob.Mod2((Vector3I)pos.Floor(), Geometry.DimLen);
+    public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3I localPos) {
+      var cell = Glob.Mod(localPos, Geometry.Size);
+      GD.PrintS(cell, localPos, Skey);
       var celli = Glob.Flat(cell, Geometry.DimLen);
       Int16[] result = new Int16[16];
       var blockId = (BlockId)((Cell)Durable.Cells[celli]).Id;

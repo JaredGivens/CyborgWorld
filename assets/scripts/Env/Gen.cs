@@ -110,7 +110,7 @@ namespace Chunk {
       _simplexNoise1.FractalType = FastNoiseLite.FractalTypeEnum.Fbm;
       _simplexNoise1.Seed = Glob.Save.Seed + 1;
       _simplexNoise1.FractalGain = 0.3f;
-      _simplexNoise1.FractalOctaves = 4;
+      _simplexNoise1.FractalOctaves = 5;
       _simplexNoise1.Frequency = 0.01f;
 
       _valueNoise.Seed = Glob.Save.Seed;
@@ -148,6 +148,7 @@ namespace Chunk {
           //GD.Print(Count);
           var s = Math.Sign(_noise[Glob.Flat(v0 + Vector3I.One, NDimLen)]);
           _cells[i].Dist = (SByte)(SByte.MaxValue * s);
+          _cells[i].Id = (Byte)BlockId.Dirt;
         }
       }
       //if (n != 0) {
@@ -238,7 +239,7 @@ namespace Chunk {
       for (Int32 i = 0; i < _noise.Length; ++i) {
         var nv = Glob.Unflat(i, NDimLen);
         var worldCell = nv - Vector3I.One + _pos;
-        var noise = 0.0f;//= -_simplexNoise0.GetNoise3Dv(worldCell) * 8;
+        var noise = -_simplexNoise0.GetNoise3Dv(worldCell) * 8;
         noise -= ComputeHeight(worldCell);
         noise += worldCell.Y;
         _noise[i] = noise;
@@ -292,6 +293,7 @@ namespace Chunk {
         ratio = planeN.Dot(planeC) / norm.Dot(planeN);
         surface = norm * ratio + v0;
         var d0 = _cells[i].Dist = SignDist(-ratio);
+        _cells[i].Id = (Byte)(Vector3.Up.Dot(norm) > 0.7f ? BlockId.Grass : BlockId.Dirt);
         _cells[i].SetNormal(norm);
         foreach (Vector3I neighbor in Neighbors) {
           var s2 = Math.Sign(_noise[Glob.Flat(nv0 + neighbor, NDimLen)]);

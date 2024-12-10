@@ -32,7 +32,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
 	"sourceSize": {"w":512,"h":512}
 },
-"grassy-meadow1_ORM.png":
+"mossy-ground1-orm.png":
 {
 	"frame": {"x":0,"y":1024,"w":512,"h":512},
 	"rotated": false,
@@ -55,6 +55,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1024,"h":1536},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:cf1e133a0e5b3c16d529d0cf395553fe:d6d563ee36b218da8b2d5776198c6c64:ccfc114041994c31a14a2351d48b27ce$"
+	"smartupdate": "$TexturePacker:SmartUpdate:544ddd4fa9f6a8ed152f0cac567cdeed:9b24ca64eee518b36e4e7c6a800c5f12:ccfc114041994c31a14a2351d48b27ce$"
 }
 }

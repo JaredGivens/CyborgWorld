@@ -74,7 +74,7 @@
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png8</enum>
+        <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>
@@ -192,7 +192,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">grassy-meadow1_ORM.png</key>
+            <key type="filename">mossy-ground1-orm.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -219,7 +219,7 @@
                     <filename>cement_arcing_pattern1_ORM.png</filename>
                     <filename>ash-tree-bark_ORM.png</filename>
                     <filename>aluminum-squares_ORM.png</filename>
-                    <filename>grassy-meadow1_ORM.png</filename>
+                    <filename>mossy-ground1-orm.png</filename>
                 </array>
             </struct>
         </map>

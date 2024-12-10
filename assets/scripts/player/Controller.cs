@@ -212,6 +212,7 @@ namespace Player {
       Velocity = velocity;
       MoveAndSlide();
       UpdateCursor();
+      Chunk.Loader.SetGrassPlayer(Position);
     }
     public void Store() {
       _save.PlayerTransform = Transform;

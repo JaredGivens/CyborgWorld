@@ -97,11 +97,11 @@ namespace Chunk {
       PhysicsServer3D.BodySetSpace(_body.GetRid(), space);
 
       RenderingServer.MultimeshSetMesh(_grassMulti.GetRid(), Loader.GrassMesh.GetRid());
-      _grassMulti.UseColors = false;
-      _grassMulti.UseCustomData = false;
       _grassMultiInst = RenderingServer.InstanceCreate2(_grassMulti.GetRid(), scenario);
       RenderingServer.InstanceGeometrySetCastShadowsSetting(_grassMultiInst,
           RenderingServer.ShadowCastingSetting.Off);
+      _grassMulti.UseColors = false;
+      _grassMulti.UseCustomData = false;
     }
     public static Vector3I Skey(Vector3I gkey) { return gkey; }
     Cell GetCell(Vector3I dcell) {
@@ -137,7 +137,6 @@ namespace Chunk {
       _verts.Clear();
       _norms.Clear();
       _uvs.Clear();
-      _grassTsfs.Clear();
       AddVertices();
       if (_vertFlats.Count == 0) {
         if (_inst.IsValid) {
@@ -194,12 +193,9 @@ namespace Chunk {
       RenderingServer.MultimeshAllocateData(_grassMulti.GetRid(),
           _grassTsfs.Count / 12,
           RenderingServer.MultimeshTransformFormat.Transform3D);
-      RenderingServer.InstanceSetVisible(_grassMultiInst, _grassTsfs.Count != 0);
-      if (_grassTsfs.Count != 0) {
-        RenderingServer.MultimeshSetBuffer(_grassMulti.GetRid(), _grassTsfs.ToArray());
-        RenderingServer.InstanceSetTransform(_grassMultiInst, tsf);
-        RenderingServer.InstanceGeometrySetMaterialOverride(_grassMultiInst, Loader.GrassShaderMat.GetRid());
-      }
+      RenderingServer.MultimeshSetBuffer(_grassMulti.GetRid(), _grassTsfs.ToArray());
+      RenderingServer.InstanceSetTransform(_grassMultiInst, tsf);
+      RenderingServer.InstanceGeometrySetMaterialOverride(_grassMultiInst, _debugMat.GetRid());
       return;
     }
     void AddBoundries() {
@@ -233,7 +229,7 @@ namespace Chunk {
     }
     public void TryAddGrass(Vector3 a, Vector3 b, Vector3 c, Vector3 normal) {
       var normDot = Vector3.Up.Dot(normal);
-      if (normDot <= 0.9f) {
+      if (normDot <= 0.8f) {
         return;
       }
       // Compute two basis vectors for the plane
@@ -255,13 +251,12 @@ namespace Chunk {
       var tangent = Vector3.Up.Cross(normal);
       var pos = a + r1 * u + r2 * v;
       var basis = new Basis(tangent, MathF.Acos(normDot));
-      basis = basis.Rotated(normal, rng.NextSingle() * MathF.Tau);
-      basis = basis.Scaled(Vector3.One * ((rng.NextSingle() * 0.5f) + 0.5f));
+      basis.Scaled(Vector3.One * ((rng.NextSingle() * 0.4f) + 0.7f));
       //GD.PrintS(pos);
-      var tsf = new Transform3D(basis, pos);
-      for (Int32 i = 0; i < 3; ++i) {
-        for (Int32 j = 0; j < 4; ++j) {
-          _grassTsfs.Add(tsf[j][i]);
+      var tsf = new Transform3D(Basis.Identity, pos);
+      for (Int32 i = 0; i < 4; ++i) {
+        for (Int32 j = 0; j < 3; ++j) {
+          _grassTsfs.Add(tsf[i][j]);
         }
       }
     }
@@ -275,8 +270,7 @@ namespace Chunk {
             _vertFlats.IndexOf(dflat - quadIndOffsets[side * 6 + i])
         ]);
       }
-      var blockId = GetCell(cell).Id;
-      _uvs.AddRange(Enumerable.Repeat(Loader.BlockUvs[blockId], 6));
+      _uvs.AddRange(Enumerable.Repeat(Loader.BlockUvs[GetCell(cell).Id], 6));
       var vc = _verts.Count - 6;
       for (Int32 i = 0; i < 2; ++i) {
         var o = i * 3;
@@ -285,9 +279,7 @@ namespace Chunk {
         var c = _verts[vc + o + 2];
         var norm = Normal(a, b, c);
         _norms.AddRange(Enumerable.Repeat(norm, 3));
-        if (blockId == (Byte)BlockId.Grass) {
-          TryAddGrass(a, b, c, norm);
-        }
+        TryAddGrass(a, b, c, norm);
       }
     }
     Vector3 Normal(Vector3 a, Vector3 b, Vector3 c) {

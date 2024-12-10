@@ -61,7 +61,7 @@ namespace Player {
       };
       var norm = (Vector3)result["normal"];
       var pos = (Vector3)result["position"];
-      GlobalPosition = (pos / Chunk.Geometry.Scale).Round() * Chunk.Geometry.Scale;
+      GlobalPosition = (pos / Chunk.Geometry.Scale).Floor() * Chunk.Geometry.Scale;
       Visible = true;
 
     }

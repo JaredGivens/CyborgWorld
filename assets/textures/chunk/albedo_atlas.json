@@ -32,7 +32,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
 	"sourceSize": {"w":512,"h":512}
 },
-"grassy-meadow1_albedo.png":
+"mossy-ground1-albedo.png":
 {
 	"frame": {"x":0,"y":1024,"w":512,"h":512},
 	"rotated": false,
@@ -55,6 +55,6 @@
 	"format": "RGBA8888",
 	"size": {"w":1024,"h":1536},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:098d302ceb2d007176c1b7e6a55fae9c:c057279c743fa957385b210cfb2f42d1:3050b962739f5dcf5cf576b16adcb068$"
+	"smartupdate": "$TexturePacker:SmartUpdate:19277979761793d3bd856f7d509103e4:3d1a3e43a8599b209b62b1e0781dca6a:3050b962739f5dcf5cf576b16adcb068$"
 }
 }

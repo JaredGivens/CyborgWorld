@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://vd18003dxbsj"]
+[gd_scene load_steps=8 format=3 uid="uid://vd18003dxbsj"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_km1p8"]
 [ext_resource type="PackedScene" uid="uid://75lqsriq84k3" path="res://scenes/ui/loading.tscn" id="2_u2tip"]
 [ext_resource type="PackedScene" uid="uid://71v1mmn5c028" path="res://scenes/ui/save_menu.tscn" id="3_hsbcf"]
+[ext_resource type="PackedScene" uid="uid://bytkypwktjhrn" path="res://models/glbs/grass/grass.glb" id="4_lwp76"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_too6m"]
 
@@ -12,16 +13,19 @@ sky_material = SubResource("PhysicalSkyMaterial_too6m")
 [sub_resource type="Environment" id="Environment_0xuk4"]
 background_mode = 2
 sky = SubResource("Sky_smki7")
-tonemap_mode = 1
+tonemap_mode = 3
 glow_enabled = true
-fog_enabled = true
 fog_mode = 1
+fog_sun_scatter = 0.5
 fog_density = 1.0
 fog_depth_begin = 56.0
 fog_depth_end = 112.0
 
-[node name="Node3D2" type="Node3D"]
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("_loadingScreen", "_saveMenu", "grass")]
 script = ExtResource("1_km1p8")
+_loadingScreen = NodePath("Loading")
+_saveMenu = NodePath("SaveMenu")
+grass = NodePath("grass/blade2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.554016, 0.486073, -0.675869, 0, 0.811849, 0.583867, 0.832506, -0.323472, 0.449778, 0, 0, 0)
@@ -35,3 +39,8 @@ environment = SubResource("Environment_0xuk4")
 
 [node name="Loading" parent="." instance=ExtResource("2_u2tip")]
 visible = false
+
+[node name="grass" parent="." instance=ExtResource("4_lwp76")]
+visible = false
+
+[editable path="grass"]

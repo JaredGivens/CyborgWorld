@@ -67,7 +67,7 @@ const vec2 uvs[] = {
 };
 void vertex() {
   uv = uvs[VERTEX_ID % 6];
-  norm2 = NORMAL * NORMAL;
+  norm2 = NORMAL  * NORMAL;
   uvx = texiuv(xtexi(int(UV.x), int(UV.y), NORMAL));
   uvy = texiuv(ytexi(int(UV.x), int(UV.y), NORMAL));
   uvz = texiuv(ztexi(int(UV.x), int(UV.y), NORMAL));

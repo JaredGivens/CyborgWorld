@@ -68,7 +68,7 @@
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
-        <uint>1</uint>
+        <uint>0</uint>
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
@@ -94,7 +94,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -141,7 +141,7 @@
             <string></string>
         </struct>
         <key>autoAliasEnabled</key>
-        <true/>
+        <false/>
         <key>trimSpriteNames</key>
         <false/>
         <key>prependSmartFolderName</key>
@@ -155,13 +155,13 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>1</uint>
+            <uint>0</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -176,7 +176,7 @@
             <key type="filename">aluminum-squares_NH.png</key>
             <key type="filename">cement_arcing_pattern1_NH.png</key>
             <key type="filename">dirtwithrocks_NH.png</key>
-            <key type="filename">grassy-meadow1_NH.png</key>
+            <key type="filename">mossy-ground1-nh.png</key>
             <key type="filename">old-console-monitor_NH.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -219,7 +219,7 @@
                     <filename>cement_arcing_pattern1_NH.png</filename>
                     <filename>dirtwithrocks_NH.png</filename>
                     <filename>old-console-monitor_NH.png</filename>
-                    <filename>grassy-meadow1_NH.png</filename>
+                    <filename>mossy-ground1-nh.png</filename>
                 </array>
             </struct>
         </map>

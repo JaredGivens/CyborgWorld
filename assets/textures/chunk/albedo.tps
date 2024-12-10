@@ -74,7 +74,7 @@
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png8</enum>
+        <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>
@@ -177,7 +177,6 @@
             <key type="filename">ash-tree-bark_albedo.png</key>
             <key type="filename">cement_arcing_pattern1_albedo.png</key>
             <key type="filename">dirtwithrocks_Base_Color.png</key>
-            <key type="filename">grassy-meadow1_albedo.png</key>
             <key type="filename">old-console-monitor_albedo.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -193,6 +192,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">mossy-ground1-albedo.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>512,512,1024,1024</rect>
+                <key>scale9Paddings</key>
+                <rect>512,512,1024,1024</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileLists</key>
         <map type="SpriteSheetMap">
@@ -205,7 +219,7 @@
                     <filename>old-console-monitor_albedo.png</filename>
                     <filename>ash-tree-bark_albedo.png</filename>
                     <filename>aluminum-squares_albedo.png</filename>
-                    <filename>grassy-meadow1_albedo.png</filename>
+                    <filename>mossy-ground1-albedo.png</filename>
                 </array>
             </struct>
         </map>

@@ -25,7 +25,7 @@ namespace Chunk {
         .DirectMethod(normMat, components, DirectRegressionMethod.QR);
       return new Vector3(res[0], res[1], res[2]);
     }
-    private Single FDelta(sbyte dist, sbyte pos, sbyte neg) {
+    private Single FDelta(SByte dist, SByte pos, SByte neg) {
       var d = (Single)dist / Glob.DistFac;
       var p = (Single)pos / Glob.DistFac;
       var n = (Single)neg / Glob.DistFac;

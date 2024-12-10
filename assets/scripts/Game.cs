@@ -13,8 +13,12 @@ public partial class Game : Node3D {
   }
   private readonly PackedScene _playerScene = GD.Load<PackedScene>("res://scenes/player.tscn");
   private Player.Controller _player;
+  [Export]
   private Loading _loadingScreen;
+  [Export]
   private SaveMenu _saveMenu;
+  [Export]
+  private MeshInstance3D grass;
   private State _state = State.SaveMenu;
   public Terrain Terrain;
   Game() {
@@ -25,8 +29,8 @@ public partial class Game : Node3D {
     Chunk.Compute.Dispose();
   }
   public override void _Ready() {
-    _saveMenu = GetNode<SaveMenu>("SaveMenu");
-    _loadingScreen = GetNode<Loading>("Loading");
+    Chunk.Loader.Init();
+    Chunk.Loader.InitGrass(grass.Mesh);
   }
   private void LoadUnits() {
     Glob.Units = new List<Unit>();
