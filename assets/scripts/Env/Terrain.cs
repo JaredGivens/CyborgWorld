@@ -138,7 +138,7 @@ public class Terrain : IDisposable {
     return _saveMap[Glob.ModFlat2(gkey, Chunk.Save.MapDimLen)].Interact(localPos);
   }
   Vector3I PosGeoKey(Vector3 p) {
-    return Glob.DivFloor(p, Chunk.Geometry.Size * Chunk.Geometry.Scale);
+    return Glob.DivFloor(p - Vector3.One * 2, Chunk.Geometry.Size * Chunk.Geometry.Scale);
   }
   public void Process(Vector3 pos) {
     var oldKey = PosGeoKey(_position);

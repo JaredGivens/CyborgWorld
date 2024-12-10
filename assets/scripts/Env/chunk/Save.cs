@@ -115,7 +115,6 @@ namespace Chunk {
     }
     public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3I localPos) {
       var cell = Glob.Mod(localPos, Geometry.Size);
-      GD.PrintS(cell, localPos, Skey);
       var celli = Glob.Flat(cell, Geometry.DimLen);
       Int16[] result = new Int16[16];
       var blockId = (BlockId)((Cell)Durable.Cells[celli]).Id;

@@ -99,17 +99,10 @@ namespace Player {
         return;
       }
       if (@event.IsActionPressed("interact")) {
-        var facing = -_cam.GlobalBasis.Z.Normalized();
-        var origin = _cam.GlobalPosition;
-        var ray = PhysicsRayQueryParameters3D
-          .Create(origin, facing * 8 + origin);
-        var result = PhysicsServer3D.SpaceGetDirectState(_space)
-          .IntersectRay(ray);
-        if (!result.ContainsKey("position")) {
+        if (_cursor.Visible == false) {
           return;
         }
-        var pos = (Vector3)result["position"];
-        var res = GetParent<Game>().Terrain.Interact(pos);
+        var res = GetParent<Game>().Terrain.Interact(_cursor.GlobalPosition);
         if (res is (Chunk.BlockId id, Memory<Int16> items)) {
           GD.Print(id);
         }
