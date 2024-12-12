@@ -13,6 +13,7 @@ material = ExtResource("2_2klov")
 size = Vector3(2, 2, 2)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_is7vl"]
+material = ExtResource("2_2klov")
 top_radius = 1.0
 bottom_radius = 1.0
 
@@ -25,8 +26,6 @@ skeleton = NodePath("../Cube")
 
 [node name="Cube" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_yqdnd")
-surface_material_override/0 = ExtResource("2_2klov")
 
 [node name="Cylinder" type="MeshInstance3D" parent="."]
 mesh = SubResource("CylinderMesh_is7vl")
-surface_material_override/0 = ExtResource("2_2klov")

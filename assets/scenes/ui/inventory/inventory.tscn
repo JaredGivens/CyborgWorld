@@ -1,17 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2b0q7fslawpp"]
+[gd_scene load_steps=4 format=3 uid="uid://b2b0q7fslawpp"]
 
 [ext_resource type="Script" path="res://scripts/ui/inventory/Inventory.cs" id="1_3pnj7"]
-[ext_resource type="Shader" path="res://shaders/background.gdshader" id="1_4va7o"]
+[ext_resource type="Material" uid="uid://doe6wbriax2n6" path="res://resources/ui_background.tres" id="1_6dany"]
 [ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/inventory/units/unit_grid.tscn" id="3_mwipv"]
-[ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/inventory/hotbar.tscn" id="4_ccaep"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tu8gg"]
-shader = ExtResource("1_4va7o")
-shader_parameter/blur = 1.37
-shader_parameter/brightness = 0.711
-
-[node name="Inventory" type="ColorRect"]
-material = SubResource("ShaderMaterial_tu8gg")
+[node name="Inventory" type="ColorRect" node_paths=PackedStringArray("_items", "_phases", "_sandbox")]
+material = ExtResource("1_6dany")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,6 +13,9 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
 script = ExtResource("1_3pnj7")
+_items = NodePath("CenterContainer/VBoxContainer/HBoxContainer/Items")
+_phases = NodePath("CenterContainer/VBoxContainer/HBoxContainer/Phases")
+_sandbox = NodePath("CenterContainer/VBoxContainer/HBoxContainer/Sandbox")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -34,15 +31,13 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ItemSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
+[node name="Phases" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
+visible = false
 layout_mode = 2
 
-[node name="PhaseSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
+[node name="Items" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
 layout_mode = 2
 
-[node name="SandboxSlots" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
+[node name="Sandbox" parent="CenterContainer/VBoxContainer/HBoxContainer" instance=ExtResource("3_mwipv")]
 layout_mode = 2
-
-[node name="Hotbar" parent="CenterContainer/VBoxContainer" instance=ExtResource("4_ccaep")]
-layout_mode = 2
-Mutable = true
+Droppable = true

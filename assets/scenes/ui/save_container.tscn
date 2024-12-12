@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://b34xpu2xtxtdv"]
 
 [ext_resource type="Script" path="res://scripts/ui/SaveContainer.cs" id="1_h0j4c"]
-[ext_resource type="Texture2D" uid="uid://cxsijlbx5cnek" path="res://textures/icons/play.svg" id="2_3up2g"]
-[ext_resource type="Texture2D" uid="uid://b3d6pbtqa2d3e" path="res://textures/icons/delete.svg" id="3_qyqd8"]
+[ext_resource type="Texture2D" uid="uid://dqd3vvs63q2ms" path="res://textures/icons/play.svg" id="2_3up2g"]
+[ext_resource type="Texture2D" uid="uid://ckpu032i3dvpa" path="res://textures/icons/delete.svg" id="3_qyqd8"]
 
 [node name="SaveContainer" type="HBoxContainer"]
 anchors_preset = 6

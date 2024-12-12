@@ -8,7 +8,7 @@ public partial class UnitGrid : ScrollContainer {
   [Export]
   public UnitType Types = UnitType.Spell | UnitType.Item | UnitType.Terraform;
   [Export]
-  public bool Droppable = false;
+  public Boolean Droppable = false;
   [Export]
   public Int32 Columns = 8;
   [Export]
@@ -48,7 +48,7 @@ public partial class UnitGrid : ScrollContainer {
       });
     }
   }
-  public override bool _CanDropData(Vector2 pos, Variant data) {
+  public override Boolean _CanDropData(Vector2 pos, Variant data) {
     var stack = (UnitStack)data;
     if (stack.Amt == 0) {
       return false;

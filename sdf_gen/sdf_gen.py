@@ -63,8 +63,12 @@ def find_signed_distance(point: Vector, bvh_data: BVHTreeList):
             location, normal, index, distance = result
             if distance < closest_distance:
                 closest_distance = distance
-                block_id = int(obj.material_slots.values()[0].name)
-                closest_info =  (distance  - 1 / 2 / SCALE, block_id, normal)
+                signed_distance = distance  - 1 / 2 / SCALE
+                if signed_distance < 0:
+                    block_id = int(obj.material_slots.values()[0].name) 
+                else: 
+                    block_id = 0
+                closest_info = (signed_distance, block_id, normal)
 
     return closest_info
 

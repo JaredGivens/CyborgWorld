@@ -31,6 +31,9 @@ public partial class Game : Node3D {
   public override void _Ready() {
     Chunk.Loader.Init();
     Chunk.Loader.InitGrass(grass.Mesh);
+    foreach (var ui in Chunk.Loader.BlockUis) {
+      AddChild(ui.Value);
+    }
   }
   private void LoadUnits() {
     Glob.Units = new List<Unit>();

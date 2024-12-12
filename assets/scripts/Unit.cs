@@ -15,9 +15,9 @@ public struct UnitData {
 }
 public partial class Unit : Resource {
   [Export]
-  public string Name;
+  public String Name;
   [Export(PropertyHint.MultilineText)]
-  public string Desc;
+  public String Desc;
   [Export]
   public Texture2D Icon;
   [Export]

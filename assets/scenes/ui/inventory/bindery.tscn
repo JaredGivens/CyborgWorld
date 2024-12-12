@@ -1,14 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://brle4r1oxbqsc"]
 
+[ext_resource type="Material" uid="uid://doe6wbriax2n6" path="res://resources/ui_background.tres" id="1_w45wu"]
 [ext_resource type="PackedScene" uid="uid://gviycsooitn" path="res://scenes/ui/inventory/units/unit_grid.tscn" id="1_x105b"]
 [ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/inventory/units/unit_slot_texture.tscn" id="2_60yen"]
 [ext_resource type="PackedScene" uid="uid://curr1cqprp3gl" path="res://scenes/ui/inventory/hotbar.tscn" id="3_k0vfw"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fd58w"]
-
 [node name="Bindary" type="ColorRect"]
 visible = false
-material = SubResource("ShaderMaterial_fd58w")
+material = ExtResource("1_w45wu")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
