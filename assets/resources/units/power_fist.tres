@@ -9,5 +9,5 @@ Name = "Power Fist"
 Desc = "power fist"
 Icon = ExtResource("1_eidxh")
 Type = 2
-Shape = 2
-Basis = Basis(2, 0, 0, 0, 2, 0, 0, 0, 2)
+Shape = 0
+Basis = Basis(4, 0, 0, 0, 4, 0, 0, 0, 4)

@@ -58,7 +58,7 @@ public partial class UnitTexture : TextureRect {
       _countLabel.Text = Stack.Amt.ToString();
     }
   }
-  public override bool _CanDropData(Vector2 at_position, Variant data) {
+  public override Boolean _CanDropData(Vector2 at_position, Variant data) {
     var stack = (UnitStack)data;
     if (stack.Amt == 0) {
       return false;
@@ -79,7 +79,10 @@ public partial class UnitTexture : TextureRect {
     Stack = (UnitStack)data;
   }
   public override void _Notification(Int32 code) {
-    if (code != NotificationDragEnd || this != _dragged || IsDragSuccessful()) {
+    if (code != NotificationDragEnd || this != _dragged) {
+      return;
+    }
+    if (!_mutable && IsDragSuccessful()) {
       return;
     }
     Stack = new UnitStack(Stack.Id, Stack.Amt + 1);

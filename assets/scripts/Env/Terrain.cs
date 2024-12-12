@@ -18,10 +18,10 @@ public class Terrain : IDisposable {
     if (Glob.RD == null) {
       var computeThread = new Thread(() => {
         Glob.RD = RenderingServer.CreateLocalRenderingDevice();
+        Chunk.Compute.Init();
       });
       computeThread.Start();
       computeThread.Join();
-      Chunk.Compute.Init();
     }
     _geometryMap = new Chunk.Geometry[Chunk.Geometry.MapDimLen3];
     _saveMap = new Chunk.Save[Chunk.Save.MapDimLen3];
@@ -132,7 +132,6 @@ public class Terrain : IDisposable {
     });
   }
   public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3 pos) {
-    pos = pos.Round();
     var gkey = PosGeoKey(pos);
     var localPos = (Vector3I)pos - gkey * Chunk.Geometry.Size;
     return _saveMap[Glob.ModFlat2(gkey, Chunk.Save.MapDimLen)].Interact(localPos);
@@ -155,15 +154,17 @@ public class Terrain : IDisposable {
       }
     } else if (oldKey != newKey) {
       _position = pos;
-      var odkeys = LoadKeys(oldKey);
-      var ndkeys = LoadKeys(newKey);
-      foreach (var key in ndkeys) {
-        if (odkeys.Contains(key)) {
+      var okeys = LoadKeys(oldKey);
+      var nkeys = LoadKeys(newKey);
+      foreach (var key in nkeys) {
+        if (okeys.Contains(key)) {
           continue;
         }
         RunTask(() => {
           var save = _saveMap[Glob.ModFlat2(key, Chunk.Save.MapDimLen)];
           save.StoreLoad(key);
+          //var geo = _geometryMap[Glob.ModFlat2(key, Chunk.Geometry.MapDimLen)];
+          //geo.UpdateGrass(pos);
         });
       }
     }

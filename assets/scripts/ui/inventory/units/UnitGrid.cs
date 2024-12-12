@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 public partial class UnitGrid : ScrollContainer {
   static PackedScene _unitSlotTexPacked =
@@ -8,14 +7,14 @@ public partial class UnitGrid : ScrollContainer {
   [Export]
   public UnitType Types = UnitType.Spell | UnitType.Item | UnitType.Terraform;
   [Export]
-  public bool Droppable = false;
+  public Boolean Droppable = false;
   [Export]
   public Int32 Columns = 8;
   [Export]
   public Int32 SlotAmt = 64;
   private List<UnitTexture> _units = new();
   private GridContainer _grid;
-  private Int16[] _binding;
+  private Memory<Int16> _binding;
   public override void _Ready() {
     _grid = GetNode<GridContainer>("GridContainer");
     _grid.Columns = Columns;
@@ -36,19 +35,19 @@ public partial class UnitGrid : ScrollContainer {
   }
   public void UpdateStacks() {
     for (Int32 i = 0; i < SlotAmt; ++i) {
-      _units[i].Stack = (UnitStack)_binding[i];
+      _units[i].Stack = (UnitStack)_binding.Span[i];
     }
   }
-  public void BindStacks(Int16[] stacks) {
+  public void BindStacks(Memory<Int16> stacks) {
     _binding = stacks;
     for (Int32 i = 0; i < SlotAmt; ++i) {
       var icopy = i;
-      _units[i].Init((UnitStack)stacks[i], !Droppable, Types, () => {
-        _binding[icopy] = (Int16)_units[icopy].Stack;
+      _units[i].Init((UnitStack)stacks.Span[i], !Droppable, Types, () => {
+        _binding.Span[icopy] = (Int16)_units[icopy].Stack;
       });
     }
   }
-  public override bool _CanDropData(Vector2 pos, Variant data) {
+  public override Boolean _CanDropData(Vector2 pos, Variant data) {
     var stack = (UnitStack)data;
     if (stack.Amt == 0) {
       return false;

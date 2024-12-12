@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://curr1cqprp3gl"]
+[gd_scene load_steps=4 format=3 uid="uid://curr1cqprp3gl"]
 
 [ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/inventory/units/unit_slot_texture.tscn" id="1_4odkm"]
 [ext_resource type="Script" path="res://scripts/ui/inventory/Hotbar.cs" id="1_07ocb"]
+[ext_resource type="LabelSettings" uid="uid://bg114v5jl4jcq" path="res://resources/HudLabel.tres" id="2_ao88j"]
 
 [node name="Hotbar" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -19,40 +21,48 @@ script = ExtResource("1_07ocb")
 [node name="VBoxContainer0" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VBoxContainer0"]
-layout_mode = 2
-text = "Q"
-
 [node name="UnitSlotTexture0" parent="VBoxContainer0" instance=ExtResource("1_4odkm")]
 layout_mode = 2
 
+[node name="Label" type="Label" parent="VBoxContainer0"]
+layout_mode = 2
+text = "Q"
+label_settings = ExtResource("2_ao88j")
+horizontal_alignment = 1
+
 [node name="VBoxContainer1" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UnitSlotTexture1" parent="VBoxContainer1" instance=ExtResource("1_4odkm")]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer1"]
 layout_mode = 2
 text = "E"
-
-[node name="UnitSlotTexture1" parent="VBoxContainer1" instance=ExtResource("1_4odkm")]
-layout_mode = 2
+label_settings = ExtResource("2_ao88j")
+horizontal_alignment = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UnitSlotTexture2" parent="VBoxContainer2" instance=ExtResource("1_4odkm")]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer2"]
 layout_mode = 2
 text = "R"
-
-[node name="UnitSlotTexture2" parent="VBoxContainer2" instance=ExtResource("1_4odkm")]
-layout_mode = 2
+label_settings = ExtResource("2_ao88j")
+horizontal_alignment = 1
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="UnitSlotTexture3" parent="VBoxContainer3" instance=ExtResource("1_4odkm")]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer3"]
 layout_mode = 2
 text = "F
 "
-
-[node name="UnitSlotTexture3" parent="VBoxContainer3" instance=ExtResource("1_4odkm")]
-layout_mode = 2
+label_settings = ExtResource("2_ao88j")
+horizontal_alignment = 1

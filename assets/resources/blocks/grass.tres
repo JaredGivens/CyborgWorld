@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://u57v0hqu2f2p"]
+
+[ext_resource type="Script" path="res://scripts/Block.cs" id="1_5vjhx"]
+
+[resource]
+script = ExtResource("1_5vjhx")
+AlbedoFn = "mossy-ground1-albedo.png"
+BlockId = 0
+Mapping = 0

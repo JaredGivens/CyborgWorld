@@ -20,7 +20,7 @@ namespace Player {
       _space = GetWorld3D().Space;
       _defaultUnit = new();
       _defaultUnit.Basis = Basis.Scaled(Vector3.One * 0.5f);
-      _defaultUnit.Shape = AoeShape.Cube;
+      _defaultUnit.Shape = AoeShape.Sphere;
     }
     public void Update(Vector3 pos, Vector3 facing, UnitStack stack) {
       Visible = false;
@@ -37,7 +37,7 @@ namespace Player {
     }
     void CastSnapMesh(Vector3 origin, Vector3 facing, Unit unit) {
       var ray = PhysicsRayQueryParameters3D
-        .Create(origin, facing * 8 + origin);
+        .Create(origin, facing * 16 + origin);
       var result = PhysicsServer3D.SpaceGetDirectState(_space)
         .IntersectRay(ray);
       //{
@@ -61,15 +61,16 @@ namespace Player {
       };
       var norm = (Vector3)result["normal"];
       var pos = (Vector3)result["position"];
-      GlobalPosition = (pos / Chunk.Geometry.Scale).Floor() * Chunk.Geometry.Scale;
+      GlobalPosition = (pos / Chunk.Geometry.Scale).Round();
+      // dont ask dont touch
+      GlobalPosition += new Vector3(0.1f, 0.1f, -0.1f);
+      GlobalPosition *= Chunk.Geometry.Scale;
       Visible = true;
-
     }
     void RayCastMesh(Vector3 origin, Vector3 facing, Unit unit) {
-      var ray = PhysicsRayQueryParameters3D
-        .Create(origin, facing * 8 + origin);
-      var result = PhysicsServer3D.SpaceGetDirectState(_space)
-        .IntersectRay(ray);
+      var ray = PhysicsRayQueryParameters3D.Create(origin, facing * 16 + origin);
+      var pdss = PhysicsServer3D.SpaceGetDirectState(_space);
+      var result = pdss.IntersectRay(ray);
       //{
       //position: Vector2 # point in world space for collision
       //normal: Vector2 # normal in world space for collision

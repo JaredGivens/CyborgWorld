@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://bafhneqea5vgg"]
+
+[ext_resource type="PackedScene" uid="uid://d0ef6rbbuowf" path="res://scenes/ui/blocks/Chest.tscn" id="1_rucgm"]
+[ext_resource type="Script" path="res://scripts/Block.cs" id="1_v8544"]
+
+[resource]
+script = ExtResource("1_v8544")
+AlbedoFn = "cement_arcing_pattern1_albedo.png"
+BlockId = 4
+Mapping = 0
+Ui = ExtResource("1_rucgm")

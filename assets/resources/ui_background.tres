@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://doe6wbriax2n6"]
+
+[ext_resource type="Shader" path="res://shaders/background.gdshader" id="1_4gel0"]
+
+[resource]
+shader = ExtResource("1_4gel0")
+shader_parameter/blur = 1.0
+shader_parameter/brightness = 0.7

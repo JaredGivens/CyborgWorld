@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cvwmt6107c6w3"]
+
+[ext_resource type="Script" path="res://scripts/Block.cs" id="1_6siux"]
+
+[resource]
+script = ExtResource("1_6siux")
+AlbedoFn = "dirtwithrocks_Base_Color.png"
+BlockId = 1
+Mapping = 0

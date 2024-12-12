@@ -19,6 +19,10 @@ config/icon="res://cyborg-world_icon.png"
 
 project/assembly_name="elf"
 
+[editor]
+
+movie_writer/disable_vsync=true
+
 [filesystem]
 
 import/blender/enabled=false

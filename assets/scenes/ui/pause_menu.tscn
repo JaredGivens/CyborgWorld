@@ -10,6 +10,7 @@ shader_parameter/brightness = 0.7
 
 [node name="PauseMenu" type="ColorRect"]
 visible = false
+z_index = 2
 material = SubResource("ShaderMaterial_q5bsj")
 anchors_preset = 15
 anchor_right = 1.0

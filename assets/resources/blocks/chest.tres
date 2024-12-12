@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://bpgk43b6gjl61"]
+
+[ext_resource type="Script" path="res://scripts/Block.cs" id="1_wtqqc"]
+[ext_resource type="PackedScene" uid="uid://d0ef6rbbuowf" path="res://scenes/ui/blocks/Chest.tscn" id="2_ewq7c"]
+
+[resource]
+script = ExtResource("1_wtqqc")
+AlbedoFn = "aluminum-squares_albedo.png"
+BlockId = 5
+Mapping = 0
+Ui = ExtResource("2_ewq7c")

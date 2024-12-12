@@ -19,9 +19,10 @@ namespace Chunk {
     public const Int32 DimLen = 32;
     public const Int32 DimLen2 = DimLen * DimLen;
     public const Int32 DimLen3 = DimLen2 * DimLen;
-    public const Int32 MapDimLen = 16;
+    public const Int32 MapDimLen = 8;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
+    private const Int32 _grassRadius = Size * 2;
     private static Int32[] _inQuadIndOffsets = {
           0, 1 + DimLen, 1,
           0, DimLen, 1 + DimLen,
@@ -83,7 +84,9 @@ namespace Chunk {
     private Save _locked;
     private MultiMesh _grassMulti = new();
     private Rid _grassMultiInst;
+    private Transform3D _tsf;
     public Geometry(Save[] saveMap, Rid scenario, Rid space) {
+      _debugMat.Transparency = BaseMaterial3D.TransparencyEnum.Disabled;
       _saveMap = saveMap;
       _dualContour = new(GetCell);
       _vertBufs.Resize((Int32)Mesh.ArrayType.Max);
@@ -129,8 +132,16 @@ namespace Chunk {
       _normalVertBufs[(Int32)Mesh.ArrayType.Vertex] = normVerts.ToArray();
       //}
     }
+    void Hide() {
+      RenderingServer.InstanceSetVisible(_inst, false);
+      RenderingServer.InstanceSetVisible(_grassMultiInst, false);
+      PhysicsServer3D.BodyClearShapes(_body.GetRid());
+    }
     public void Rebuild(Vector3I gkey) {
       Gkey = gkey;
+      _tsf = new Transform3D(
+          Basis.FromScale(Vector3.One * Scale),
+         (Vector3)Gkey * Size * Scale);
       var color = (Vector3)Gkey % 4 / 4;
       _vertFlats.Clear();
       _cellVerts.Clear();
@@ -140,21 +151,15 @@ namespace Chunk {
       _grassTsfs.Clear();
       AddVertices();
       if (_vertFlats.Count == 0) {
-        if (_inst.IsValid) {
-          RenderingServer.InstanceSetVisible(_inst, false);
-        }
-        PhysicsServer3D.BodyClearShapes(_body.GetRid());
+        Hide();
         return;
       }
       StitchQuads();
-      if (_inst.IsValid) {
-        Update();
-      }
+      Update();
     }
     public void Update() {
       if (_verts.Count == 0) {
-        RenderingServer.InstanceSetVisible(_inst, false);
-        PhysicsServer3D.BodyClearShapes(_body.GetRid());
+        Hide();
         return;
       }
       if (Options.HasFlag(DisplayOptions.Colors)) {
@@ -164,10 +169,7 @@ namespace Chunk {
         _debugMat.AlbedoColor = new Color(1, 0, 1);
       }
       RenderingServer.InstanceSetVisible(_inst, true);
-      Transform3D tsf = new Transform3D(
-          Basis.FromScale(Vector3.One * Scale),
-         (Vector3)Gkey * Size * Scale);
-      RenderingServer.InstanceSetTransform(_inst, tsf);
+      RenderingServer.InstanceSetTransform(_inst, _tsf);
       _vertBufs[(Int32)Mesh.ArrayType.Normal] = _norms.ToArray();
       _vertBufs[(Int32)Mesh.ArrayType.Vertex] = _verts.ToArray();
       _vertBufs[(Int32)Mesh.ArrayType.TexUV] = _uvs.ToArray();
@@ -190,17 +192,22 @@ namespace Chunk {
             _arrMesh.GetRid(), i, _debugMat.GetRid());
       }
       PhysicsServer3D.BodyClearShapes(_body.GetRid());
-      PhysicsServer3D.BodyAddShape(_body.GetRid(), _hullShape.GetRid(), tsf);
+      PhysicsServer3D.BodyAddShape(_body.GetRid(), _hullShape.GetRid(), _tsf);
       RenderingServer.MultimeshAllocateData(_grassMulti.GetRid(),
-          _grassTsfs.Count / 12,
-          RenderingServer.MultimeshTransformFormat.Transform3D);
+      _grassTsfs.Count / 12,
+      RenderingServer.MultimeshTransformFormat.Transform3D);
       RenderingServer.InstanceSetVisible(_grassMultiInst, _grassTsfs.Count != 0);
       if (_grassTsfs.Count != 0) {
         RenderingServer.MultimeshSetBuffer(_grassMulti.GetRid(), _grassTsfs.ToArray());
-        RenderingServer.InstanceSetTransform(_grassMultiInst, tsf);
+        RenderingServer.InstanceSetTransform(_grassMultiInst, _tsf);
         RenderingServer.InstanceGeometrySetMaterialOverride(_grassMultiInst, Loader.GrassShaderMat.GetRid());
       }
-      return;
+    }
+    public void UpdateGrass(Vector3 pos) {
+      //if (pos.DistanceTo(Gkey * Size) > _grassRadius) {
+      //RenderingServer.InstanceSetVisible(_grassMultiInst, false);
+      //return;
+      //}
     }
     void AddBoundries() {
       _boundtryVertBufs[(Int32)Mesh.ArrayType.Vertex] = new Vector3[]{
@@ -231,17 +238,18 @@ namespace Chunk {
       RenderingServer
         .InstanceSetSurfaceOverrideMaterial(_inst, i, _debugMat.GetRid());
     }
-    public void TryAddGrass(Vector3 a, Vector3 b, Vector3 c, Vector3 normal) {
-      var normDot = Vector3.Up.Dot(normal);
-      if (normDot <= 0.9f) {
-        return;
-      }
+    public void TryAddGrass(Int32 vertsOffset, Vector3 normal, Int32 seed) {
+      var a = _verts[vertsOffset];
+      var b = _verts[vertsOffset + 1];
+      var c = _verts[vertsOffset + 2];
       // Compute two basis vectors for the plane
       Vector3 u = b - a;
       Vector3 v = c - a;
 
       // Generate random barycentric coordinates
-      var rng = new Random(Glob.Flat((Vector3I)(a * Size), Size) + Glob.ModFlat2(Gkey, 256));
+      seed += Glob.Flat((Vector3I)(a * Size), Size) + Glob.ModFlat2(Gkey, 256);
+      var rng = new Random(seed);
+
       var r1 = rng.NextSingle();
       var r2 = rng.NextSingle();
 
@@ -254,7 +262,7 @@ namespace Chunk {
       // Calculate the random point on the plane
       var tangent = Vector3.Up.Cross(normal);
       var pos = a + r1 * u + r2 * v;
-      var basis = new Basis(tangent, MathF.Acos(normDot));
+      var basis = new Basis(tangent, MathF.Asin(tangent.Length()));
       basis = basis.Rotated(normal, rng.NextSingle() * MathF.Tau);
       basis = basis.Scaled(Vector3.One * ((rng.NextSingle() * 0.5f) + 0.5f));
       //GD.PrintS(pos);
@@ -286,7 +294,12 @@ namespace Chunk {
         var norm = Normal(a, b, c);
         _norms.AddRange(Enumerable.Repeat(norm, 3));
         if (blockId == (Byte)BlockId.Grass) {
-          TryAddGrass(a, b, c, norm);
+          var normDot = Vector3.Up.Dot(norm);
+          if (normDot > 0.9f) {
+            for (Int32 j = 0; j < (normDot - 0.9f) * 10 * 20; ++j) {
+              TryAddGrass(vc + o, norm, j);
+            }
+          }
         }
       }
     }

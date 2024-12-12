@@ -126,9 +126,6 @@ namespace Chunk {
       Glob.RD.FreeRid(_noiseBuf);
     }
 
-    void FromPadded(Cell[] paddedCells) {
-    }
-
     public void GenSdf(Vector3I skey, ref Durable durable) {
       _skey = skey;
       _pos = skey * Geometry.Size;
@@ -187,6 +184,7 @@ namespace Chunk {
         rng.Next(4, Geometry.Size)
       );
       var worldY = (Int32)Math.Round(ComputeHeight(ruinKey * Geometry.Size + begin0));
+      worldY -= (Int32)MathF.Round(prefab.Height * 0.25f);
       begin0.Y = Glob.Mod(worldY, Geometry.Size);
       var minY = worldY - 4;
       if (_pos.Y < minY - Geometry.Size) {

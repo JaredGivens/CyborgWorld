@@ -34,7 +34,9 @@ void vertex() {
 	// note that this means that the mesh needs to have UV in a way that the bottom of UV space
 	// is at the top of the mesh
 	float displacement_affect = (1.0 - UV.y);
-	float wind_noise_intensity = (textureLod(wind_noise, world_uv , 0.0).r - 0.5);
+	float wind_noise_intensity =
+        (textureLod(wind_noise, world_uv , 0.0).r - 0.5);
+       // + sin(world_uv.x + world_uv.y) + 1.0) / 3.0;
 
 
 	// We convert the direction of the wind into vertex space from world space

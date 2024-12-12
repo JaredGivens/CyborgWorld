@@ -65,7 +65,7 @@ namespace Chunk {
     public Durable() { }
   }
   public class Save : IDisposable {
-    public static BlockProp[] BlockProps = new BlockProp[(Int32)BlockId.Count];
+    public static BlockProp[] BlockProps;
     public const Int32 MapDimLen = Geometry.MapDimLen;//* 2;
     public const Int32 MapDimLen2 = MapDimLen * MapDimLen;
     public const Int32 MapDimLen3 = MapDimLen * MapDimLen2;
@@ -85,12 +85,13 @@ namespace Chunk {
     private Status _status = Status.None;
     private Compute _compute = new();
     void Init() {
-      BlockProps[(Int32)BlockId.Dirt] = BlockProp.Inventory;
+      BlockProps = new BlockProp[(Int32)BlockId.Count];
+      BlockProps[(Int32)BlockId.Chest] = BlockProp.Inventory;
+      BlockProps[(Int32)BlockId.Dirt] = BlockProp.None;
       BlockProps[(Int32)BlockId.Grass] = BlockProp.None;
       BlockProps[(Int32)BlockId.Stone] = BlockProp.None;
       BlockProps[(Int32)BlockId.Cement] = BlockProp.None;
       BlockProps[(Int32)BlockId.Scanner] = BlockProp.None;
-
     }
     public Save(RegionHandle[] regionMap, Geometry[] displayMap, Rid space) {
       if (BlockProps == null) {
@@ -116,10 +117,12 @@ namespace Chunk {
     public (Chunk.BlockId, Memory<Int16>)? Interact(Vector3I localPos) {
       var cell = Glob.Mod(localPos, Geometry.Size);
       var celli = Glob.Flat(cell, Geometry.DimLen);
-      Int16[] result = new Int16[16];
       var blockId = (BlockId)((Cell)Durable.Cells[celli]).Id;
+      if (!BlockProps[(Int32)blockId].HasFlag(BlockProp.Inventory)) {
+        return null;
+      }
       var items = Durable.Items[(Int16)celli];
-      return (blockId, result);
+      return (blockId, items);
     }
     public void PrintDists() {
       //var s = "";
@@ -156,23 +159,23 @@ namespace Chunk {
         if (Skey == skey) {
           return this;
         }
-        Store();
-        var rflat = Glob.ModFlat2(skey, Region.DimLen);
-        var rkey = Glob.DivFloor(skey, Region.DimLen);
-        var found = false;
-        _durables[_durableI ^ 1].Items = new();
-        _regionMap[Glob.ModFlat2(rkey, Region.MapDimLen)].StoreLoad(rkey, region => {
-          if (region.HasChunk(rflat)) {
-            region.GetChunk(rflat, ref _durables[_durableI ^ 1]);
-            //PrintDists();
-            found = true;
-          }
-        });
-        if (!found) {
-          _gen.GenSdf(skey, ref _durables[_durableI ^ 1]);
-        }
         _rwlock.EnterWriteLock();
         try {
+          Store();
+          var rflat = Glob.ModFlat2(skey, Region.DimLen);
+          var rkey = Glob.DivFloor(skey, Region.DimLen);
+          var found = false;
+          _durables[_durableI ^ 1].Items = new();
+          _regionMap[Glob.ModFlat2(rkey, Region.MapDimLen)].StoreLoad(rkey, region => {
+            if (region.HasChunk(rflat)) {
+              region.GetChunk(rflat, ref _durables[_durableI ^ 1]);
+              //PrintDists();
+              found = true;
+            }
+          });
+          if (!found) {
+            _gen.GenSdf(skey, ref _durables[_durableI ^ 1]);
+          }
           _status |= Status.Loaded;
           Skey = skey;
           Rkey = rkey;

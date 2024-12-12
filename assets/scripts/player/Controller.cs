@@ -8,8 +8,6 @@ namespace Player {
     [Export]
     public Single TermVel = 100.0f;
     [Export]
-    public Single Friction = 0.8f;
-    [Export]
     public Single Acceleration = 1.0f;
     [Export]
     private Single _sens = 0.01f;
@@ -27,6 +25,8 @@ namespace Player {
     private Inventory _inventory;
     [Export]
     private AnimationTree _animTree;
+    [Export]
+    private Label _stats;
 
     private Save _save;
     public string Uuid = "0";
@@ -46,6 +46,7 @@ namespace Player {
       _hotbar.SetProcessInput(false);
       _space = GetWorld3D().Space;
       _hotbar.BindStacks(_save.HotbarStacks);
+      _hotbar.Selected = _save.HotbarSelection;
 
       Input.MouseMode = Input.MouseModeEnum.Captured;
     }
@@ -60,7 +61,7 @@ namespace Player {
       _hotbar.UpdateStacks();
       return true;
     }
-    private void ShowControl(Control control) {
+    private void SetUI(Control control) {
       if (!CloseUI()) {
         Input.MouseMode = Input.MouseModeEnum.Visible;
       }
@@ -85,17 +86,18 @@ namespace Player {
           return;
         }
         GD.Print(Position);
-        ShowControl(_pauseMenu);
+        SetUI(_pauseMenu);
       }
       for (Int32 i = 0; i < 4; ++i) {
         if (@event.IsActionPressed($"slot{i}")) {
           _save.HotbarSelection = i;
+          _hotbar.Selected = i;
           return;
         }
       }
       if (@event.IsActionPressed("inventory")) {
         _inventory.Populate(_save);
-        ShowControl(_inventory);
+        SetUI(_inventory);
         return;
       }
       if (@event.IsActionPressed("interact")) {
@@ -104,7 +106,9 @@ namespace Player {
         }
         var res = GetParent<Game>().Terrain.Interact(_cursor.GlobalPosition);
         if (res is (Chunk.BlockId id, Memory<Int16> items)) {
-          GD.Print(id);
+          _inventory.Populate(_save, Chunk.Loader.BlockUis[id]);
+          Chunk.Loader.BlockUis[id].BindStacks(items);
+          SetUI(_inventory);
         }
         //ToggleUI(inv
 
@@ -131,7 +135,10 @@ namespace Player {
           }
           using (var shape = Aoe.GetAoe(unit.Shape)) {
             var tsf = _cursor.GlobalTransform;
-            GetParent<Game>().Terrain.ApplySdf(shape, tsf, (Int16)Chunk.BlockId.None);
+            var bid = (Int16)Chunk.BlockId.None;
+            GetParent<Game>().Terrain.ApplySdf(shape, tsf, bid);
+            var fire = (Int32)AnimationNodeOneShot.OneShotRequest.Fire;
+            _animTree.Set("parameters/shoot/request", fire);
           }
           break;
         }
@@ -167,6 +174,7 @@ namespace Player {
     private Single _gravity = ProjectSettings
       .GetSetting("physics/3d/default_gravity").AsSingle();
     public override void _PhysicsProcess(Double delta) {
+      _stats.Text = $"FPS {Engine.GetFramesPerSecond()}";
       if (_stored) {
         return;
       }
@@ -177,16 +185,18 @@ namespace Player {
       // As good practice, you should replace UI actions with custom gameplay actions.
       Vector2 inputDir = Input.GetVector("left", "right", "forward", "back");
       Vector3 direction = Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y);
+      //if (IsOnFloor()) {
       if (direction != Vector3.Zero) {
         velocity += (direction * Acceleration);
-      } else if (IsOnFloor()) {
-        velocity.X = Mathf.Lerp(velocity.X, 0.0f, Friction);
-        velocity.Z = Mathf.Lerp(velocity.Z, 0.0f, Friction);
       }
+      velocity.X = Mathf.Lerp(velocity.X, 0.0f, Acceleration / (Speed + Acceleration));
+      velocity.Z = Mathf.Lerp(velocity.Z, 0.0f, Acceleration / (Speed + Acceleration));
+      //}
       if (Input.IsActionPressed("jump")) {
         if (Glob.Save.Gamemode == GamemodeEnum.Sandbox || IsOnFloor()) {
           velocity.Y = _hover * (Single)delta;
-          _animTree.Set("parameters/Jump/request", (Int32)AnimationNodeOneShot.OneShotRequest.Fire);
+          _animTree.Set("parameters/Jump/request",
+              (Int32)AnimationNodeOneShot.OneShotRequest.Fire);
         }
       }
       var speedCap = new Vector3(Speed, TermVel, Speed);
@@ -197,11 +207,8 @@ namespace Player {
       } else if (inputDir == Vector2.Zero) {
         animState = "Idle";
       }
-
-      _animTree.Set("parameters/Running/blend_position", Transform.Basis.Inverse() * velocity.Normalized());
+      _animTree.Set("parameters/Running/blend_position", (Transform.Basis.Inverse() * velocity).Normalized());
       _animTree.Set("parameters/Transition/transition_request", animState);
-
-
       Velocity = velocity;
       MoveAndSlide();
       UpdateCursor();
