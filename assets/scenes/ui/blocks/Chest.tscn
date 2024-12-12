@@ -16,5 +16,6 @@ _items = NodePath("UnitGrid")
 
 [node name="UnitGrid" parent="." instance=ExtResource("2_ajfhs")]
 layout_mode = 0
+offset_bottom = 256.0
 vertical_scroll_mode = 0
 SlotAmt = 16
