@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://cw5jp66rbdih7"]
+
+[ext_resource type="Texture2D" uid="uid://b0odccvasjwqo" path="res://textures/units/redboot.png" id="1_cux8f"]
+[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_u2bye"]
+
+[resource]
+script = ExtResource("2_u2bye")
+Name = "Jet boots"
+Desc = ""
+Icon = ExtResource("1_cux8f")
+Type = 8
+CastType = 0
+Shape = 0
+Basis = Basis(20, 0, 0, 0, 1, 0, 0, 0, 1)
+BlockId = -1

@@ -35,11 +35,11 @@ public partial class UnitTexture : TextureRect {
     tr.CustomMinimumSize = CustomMinimumSize;
     tr.Position = -(CustomMinimumSize / 2);
     SetDragPreview(tr);
-    if (_mutable) {
-      Stack = new UnitStack(Stack.Id, Stack.Amt - 1);
-    }
+    //if (_mutable) {
+    //Stack = new UnitStack(Stack.Id, Stack.Amt - 1);
+    //}
     _dragged = this;
-    return (Int16)Stack;
+    return (Int16)new UnitStack(Stack.Id, 1);
   }
   private void Update() {
     if (OnChange != null) {
@@ -79,13 +79,13 @@ public partial class UnitTexture : TextureRect {
     Stack = (UnitStack)data;
   }
   public override void _Notification(Int32 code) {
-    if (code != NotificationDragEnd || this != _dragged) {
-      return;
-    }
-    if (!_mutable && IsDragSuccessful()) {
-      return;
-    }
-    Stack = new UnitStack(Stack.Id, Stack.Amt + 1);
+    //if (code != NotificationDragEnd || this != _dragged) {
+    //return;
+    //}
+    //if (_mutable && IsDragSuccessful()) {
+    //return;
+    //}
+    //Stack = new UnitStack(Stack.Id, Stack.Amt + 1);
 
   }
 }

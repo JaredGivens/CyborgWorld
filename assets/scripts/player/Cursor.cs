@@ -1,5 +1,9 @@
 using Godot;
 using System;
+public enum CastType {
+  Ray,
+  Shape,
+}
 namespace Player {
   public partial class Cursor : MeshInstance3D {
     public MeshInstance3D Cube;
@@ -30,10 +34,35 @@ namespace Player {
         var unit = Glob.Units[stack.Id];
         switch (unit.Type) {
           case UnitType.Terraform:
-          RayCastMesh(pos, facing, unit);
+          if (unit.CastType == CastType.Ray) {
+            RayCastMesh(pos, facing, unit);
+          } else {
+            CastShape(pos, facing, unit);
+          }
           break;
         }
       }
+    }
+    void CastShape(Vector3 origin, Vector3 facing, Unit unit) {
+      //{
+      //position: Vector2 # point in world space for collision
+      //normal: Vector2 # normal in world space for collision
+      //collider: Object # Object collided or null (if unassociated)
+      //collider_id: ObjectID # Object it collided against
+      //rid: RID # RID it collided against
+      //shape: int # shape index of collider
+      //metadata: Variant() # metadata of collider
+      //}
+      GlobalBasis = unit.Basis;
+      Mesh = (unit.Shape) switch
+      {
+        AoeShape.Cube => Cube.Mesh,
+        AoeShape.Sphere => Sphere.Mesh,
+        AoeShape.Cylinder => Cylinder.Mesh,
+      };
+      GlobalPosition = facing * unit.Basis.Scale.Z * 1.25f + origin;
+      GlobalBasis = Basis.LookingAt(facing) * unit.Basis;
+      Visible = true;
     }
     void CastSnapMesh(Vector3 origin, Vector3 facing, Unit unit) {
       var ray = PhysicsRayQueryParameters3D

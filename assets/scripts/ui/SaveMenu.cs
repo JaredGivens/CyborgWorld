@@ -8,11 +8,18 @@ public enum GamemodeEnum {
   Sandbox,
 }
 
-public partial class SaveMenu : ColorRect {
+public partial class SaveMenu : Node3D {
+  [Export]
+  private AnimationPlayer _animPlayer;
+  [Export]
   private LineEdit _nameLineEdit;
+  [Export]
   private LineEdit _seedLineEdit;
+  [Export]
   private Button _buildSaveButton;
+  [Export]
   private OptionButton _gamemodeOption;
+  [Export]
   private VBoxContainer _saveVBox;
   private String _saveDir;
   private System.Random _rng = new();
@@ -22,21 +29,7 @@ public partial class SaveMenu : ColorRect {
   private PackedScene _saveContainerPacked = GD.Load<PackedScene>("res://scenes/ui/save_container.tscn");
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
-    _nameLineEdit = GetNode<LineEdit>(
-        "CenterContainer/HBoxContainer/SaveBuilder/NameLineEdit"
-      );
-    _seedLineEdit = GetNode<LineEdit>(
-        "CenterContainer/HBoxContainer/SaveBuilder/SeedLineEdit"
-      );
-    _buildSaveButton = GetNode<Button>(
-        "CenterContainer/HBoxContainer/SaveBuilder/BuildSaveButton"
-      );
-    _gamemodeOption = GetNode<OptionButton>(
-        "CenterContainer/HBoxContainer/SaveBuilder/GamemodeOption"
-        );
-    _saveVBox = GetNode<VBoxContainer>(
-        "CenterContainer/HBoxContainer/ScrollContainer/SaveVBox"
-      );
+    _animPlayer.Play("idle");
     _buildSaveButton.Pressed += BuildSave;
     _saveDir = ProjectSettings.GlobalizePath("user://saves");
     if (!Directory.Exists(_saveDir)) {

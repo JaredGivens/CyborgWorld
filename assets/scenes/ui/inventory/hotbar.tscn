@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://curr1cqprp3gl"]
+[gd_scene load_steps=5 format=3 uid="uid://curr1cqprp3gl"]
 
 [ext_resource type="PackedScene" uid="uid://on3kpcqj8fiv" path="res://scenes/ui/inventory/units/unit_slot_texture.tscn" id="1_4odkm"]
 [ext_resource type="Script" path="res://scripts/ui/inventory/Hotbar.cs" id="1_07ocb"]
 [ext_resource type="LabelSettings" uid="uid://bg114v5jl4jcq" path="res://resources/HudLabel.tres" id="2_ao88j"]
+[ext_resource type="Texture2D" uid="uid://kq2pu273vbuq" path="res://textures/icons/grid_view_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg" id="4_3014g"]
 
 [node name="Hotbar" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 128)
@@ -64,5 +65,19 @@ layout_mode = 2
 layout_mode = 2
 text = "F
 "
+label_settings = ExtResource("2_ao88j")
+horizontal_alignment = 1
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer4"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("4_3014g")
+
+[node name="Label" type="Label" parent="VBoxContainer4"]
+layout_mode = 2
+text = "C"
 label_settings = ExtResource("2_ao88j")
 horizontal_alignment = 1

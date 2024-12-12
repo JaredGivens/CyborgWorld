@@ -1,7 +1,7 @@
 shader_type spatial;
-uniform sampler2D albedo_atlas: filter_nearest;
-uniform sampler2D orm_atlas: filter_nearest;
-uniform sampler2D nh_atlas: filter_nearest;
+uniform sampler2D albedo_atlas: filter_nearest_mipmap;
+uniform sampler2D orm_atlas: filter_nearest_mipmap;
+uniform sampler2D nh_atlas: filter_nearest_mipmap;
 uniform int atlas_height; // Number of tiles in the atlas (e.g., 4x4 tiles)
 uniform int atlas_width; // Number of tiles in the atlas (e.g., 4x4 tiles)
 uniform float chunk_size;

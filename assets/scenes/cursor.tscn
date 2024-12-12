@@ -18,6 +18,7 @@ top_radius = 1.0
 bottom_radius = 1.0
 
 [node name="Cursor" type="MeshInstance3D"]
+material_override = ExtResource("2_2klov")
 script = ExtResource("1_esfyp")
 
 [node name="Sphere" type="MeshInstance3D" parent="."]

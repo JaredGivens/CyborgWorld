@@ -6,8 +6,8 @@
 [resource]
 script = ExtResource("2_ndw5q")
 Name = "Power Fist"
-Desc = "power fist"
+Desc = ""
 Icon = ExtResource("1_eidxh")
 Type = 2
-Shape = 0
-Basis = Basis(4, 0, 0, 0, 4, 0, 0, 0, 4)
+Shape = 2
+Basis = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)

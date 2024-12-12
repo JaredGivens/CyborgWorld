@@ -51,18 +51,24 @@ namespace Player {
       Input.MouseMode = Input.MouseModeEnum.Captured;
     }
 
-    private Boolean CloseUI() {
+    private Control? CloseUI() {
       if (_currentUI == null) {
-        return false;
+        return null;
       }
       _currentUI.SetProcessInput(false);
       _currentUI.Visible = false;
+      var res = _currentUI;
       _currentUI = null;
       _hotbar.UpdateStacks();
-      return true;
+      return res;
     }
     private void SetUI(Control control) {
-      if (!CloseUI()) {
+      if (CloseUI() is Control old) {
+        if (old == control) {
+          Input.MouseMode = Input.MouseModeEnum.Captured;
+          return;
+        }
+      } else {
         Input.MouseMode = Input.MouseModeEnum.Visible;
       }
       control.Visible = true;
@@ -81,7 +87,7 @@ namespace Player {
         }
       }
       if (@event.IsActionPressed("ui_cancel")) {
-        if (CloseUI()) {
+        if (CloseUI() is Control) {
           Input.MouseMode = Input.MouseModeEnum.Captured;
           return;
         }
@@ -135,11 +141,14 @@ namespace Player {
           }
           using (var shape = Aoe.GetAoe(unit.Shape)) {
             var tsf = _cursor.GlobalTransform;
-            var bid = (Int16)Chunk.BlockId.None;
+            var bid = (Int16)unit.BlockId;
             GetParent<Game>().Terrain.ApplySdf(shape, tsf, bid);
             var fire = (Int32)AnimationNodeOneShot.OneShotRequest.Fire;
             _animTree.Set("parameters/shoot/request", fire);
           }
+          break;
+          case UnitType.Spell:
+          Velocity = new Vector3(Velocity.X, unit.Basis[0][0], Velocity.Z);
           break;
         }
         return;
@@ -174,7 +183,7 @@ namespace Player {
     private Single _gravity = ProjectSettings
       .GetSetting("physics/3d/default_gravity").AsSingle();
     public override void _PhysicsProcess(Double delta) {
-      _stats.Text = $"FPS {Engine.GetFramesPerSecond()}";
+      //_stats.Text = $"FPS {Engine.GetFramesPerSecond()}";
       if (_stored) {
         return;
       }

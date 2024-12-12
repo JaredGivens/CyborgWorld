@@ -6,8 +6,10 @@
 [resource]
 script = ExtResource("2_t165q")
 Name = "Jet boots"
-Desc = "block for scanning for chests."
+Desc = ""
 Icon = ExtResource("1_6ntok")
 Type = 8
-shape = 0
-basis = Basis(0, 0, 0, 0, 0, 0, 0, 0, 0)
+CastType = 0
+Shape = 0
+Basis = Basis(5, 0, 0, 0, 1, 0, 0, 0, 1)
+BlockId = -1

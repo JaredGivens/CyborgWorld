@@ -1,72 +1,92 @@
-[gd_scene load_steps=4 format=3 uid="uid://71v1mmn5c028"]
+[gd_scene load_steps=6 format=3 uid="uid://71v1mmn5c028"]
 
+[ext_resource type="Material" uid="uid://doe6wbriax2n6" path="res://resources/ui_background.tres" id="1_25wio"]
 [ext_resource type="Script" path="res://scripts/ui/SaveMenu.cs" id="1_se2w0"]
 [ext_resource type="Texture2D" uid="uid://dknltjyap5dp7" path="res://textures/icons/add.svg" id="2_1gbum"]
+[ext_resource type="PackedScene" uid="uid://52owj6dgn1l3" path="res://models/glbs/player/cyborg.glb" id="4_t0em7"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_eh1cj"]
 
-[node name="SaveMenu" type="ColorRect"]
-visibility_layer = 7
-z_index = 2
+[node name="SaveMenu" type="Node3D" node_paths=PackedStringArray("_animPlayer", "_nameLineEdit", "_seedLineEdit", "_buildSaveButton", "_gamemodeOption", "_saveVBox")]
+script = ExtResource("1_se2w0")
+_animPlayer = NodePath("cyborg/AnimationPlayer")
+_nameLineEdit = NodePath("ColorRect/CenterContainer/HBoxContainer/SaveBuilder/NameLineEdit")
+_seedLineEdit = NodePath("ColorRect/CenterContainer/HBoxContainer/SaveBuilder/SeedLineEdit")
+_buildSaveButton = NodePath("ColorRect/CenterContainer/HBoxContainer/SaveBuilder/BuildSaveButton")
+_gamemodeOption = NodePath("ColorRect/CenterContainer/HBoxContainer/SaveBuilder/GamemodeOption")
+_saveVBox = NodePath("ColorRect/CenterContainer/HBoxContainer/ScrollContainer/SaveVBox")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.22143, 3.0425, 2.3917)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = ExtResource("1_25wio")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.298039, 0.298039, 0.298039, 1)
-script = ExtResource("1_se2w0")
+size_flags_horizontal = 4
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect"]
+custom_minimum_size = Vector2(0, 384)
 layout_mode = 1
-anchors_preset = 13
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
+anchor_bottom = 0.5
 offset_left = -258.0
+offset_top = -192.0
 offset_right = 258.0
+offset_bottom = 192.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/CenterContainer"]
 custom_minimum_size = Vector2(0, 256)
 layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="SaveBuilder" type="VBoxContainer" parent="CenterContainer/HBoxContainer"]
+[node name="SaveBuilder" type="VBoxContainer" parent="ColorRect/CenterContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CenterContainer/HBoxContainer/SaveBuilder"]
+[node name="Label" type="Label" parent="ColorRect/CenterContainer/HBoxContainer/SaveBuilder"]
 layout_mode = 2
 text = "Cyborg World"
 label_settings = SubResource("LabelSettings_eh1cj")
 
-[node name="NameLineEdit" type="LineEdit" parent="CenterContainer/HBoxContainer/SaveBuilder"]
+[node name="NameLineEdit" type="LineEdit" parent="ColorRect/CenterContainer/HBoxContainer/SaveBuilder"]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 placeholder_text = "Name"
 
-[node name="SeedLineEdit" type="LineEdit" parent="CenterContainer/HBoxContainer/SaveBuilder"]
+[node name="SeedLineEdit" type="LineEdit" parent="ColorRect/CenterContainer/HBoxContainer/SaveBuilder"]
 layout_mode = 2
 placeholder_text = "Seed"
 
-[node name="GamemodeOption" type="OptionButton" parent="CenterContainer/HBoxContainer/SaveBuilder"]
+[node name="GamemodeOption" type="OptionButton" parent="ColorRect/CenterContainer/HBoxContainer/SaveBuilder"]
 layout_mode = 2
 selected = 0
 item_count = 2
-popup/item_0/text = "Survival"
+popup/item_0/text = "Normal"
 popup/item_1/text = "Sandbox"
 popup/item_1/id = 1
 
-[node name="BuildSaveButton" type="Button" parent="CenterContainer/HBoxContainer/SaveBuilder"]
+[node name="BuildSaveButton" type="Button" parent="ColorRect/CenterContainer/HBoxContainer/SaveBuilder"]
 layout_mode = 2
 icon = ExtResource("2_1gbum")
 icon_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="ColorRect/CenterContainer/HBoxContainer"]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 
-[node name="SaveVBox" type="VBoxContainer" parent="CenterContainer/HBoxContainer/ScrollContainer"]
+[node name="SaveVBox" type="VBoxContainer" parent="ColorRect/CenterContainer/HBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 3
+
+[node name="cyborg" parent="." instance=ExtResource("4_t0em7")]
+
+[editable path="cyborg"]

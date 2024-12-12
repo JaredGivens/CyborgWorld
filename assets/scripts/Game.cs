@@ -51,8 +51,10 @@ public partial class Game : Node3D {
           container.Pressed = false;
           Glob.Save = container._save;
           Glob.SavePath = container._path;
-          _saveMenu.Visible = false;
-          _saveMenu.SetProcessInput(false);
+          var args = new Godot.Collections.Array();
+          args.Add(false);
+          _saveMenu.PropagateCall("set_visible", args);
+          _saveMenu.PropagateCall("set_process_input", args);
           _loadingScreen.StartLoading(
               () => (Single)Terrain.LoadedSaves / MathF.Pow(Glob.LoadDist, 3));
           _player = _playerScene.Instantiate<Player.Controller>();
@@ -72,8 +74,10 @@ public partial class Game : Node3D {
       break;
       case State.SavingGame:
       if (_loadingScreen.IsFinished()) {
-        _saveMenu.Visible = true;
-        _saveMenu.SetProcessInput(true);
+        var args = new Godot.Collections.Array();
+        args.Add(true);
+        _saveMenu.PropagateCall("set_visible", args);
+        _saveMenu.PropagateCall("set_process_input", args);
         _state = State.SaveMenu;
         Terrain = null;
       }

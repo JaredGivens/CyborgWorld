@@ -43,20 +43,20 @@ vec3 safe_divide(vec3 v, float d) {
 
 int cube_sdf(vec3 pos) {
     vec4 local_pos4 = u_inv_tsf * vec4(pos, 1.0);
-    vec3 local_pos = safe_divide(local_pos4.xyz, local_pos4.w);
+    vec3 local_pos = local_pos4.xyz / local_pos4.w;
     vec3 local_diff = abs(local_pos) - vec3(1.0);
     vec3 local_pos_near = max(local_diff, vec3(0.0));
     vec3 max_mask = max(local_diff.yzx, local_diff.zxy);
-    max_mask = vec3(greaterThanEqual(local_diff.xyz, max_mask));
+    max_mask = vec3(greaterThan(local_diff.xyz, max_mask));
     vec3 local_neg_near = max_mask * local_diff;
-    float is_neg = float(0.0 >= dot(max_mask, local_diff));
-    vec3 local_near = mix(local_pos_near, local_neg_near, is_neg);
+    bool is_neg = 0.0 > dot(max_mask, local_diff);
+    vec3 local_near = mix(local_pos_near, local_neg_near, float(is_neg));
     //vec3 local_norm = mix(max_mask, normalize(local_pos_near), is_neg)
     //* (sign(local_pos) + vec3(equal(local_pos, vec3(0.0))));
     //vec4 norm4 = tsf * vec4(local_norm, 1.0);
     vec3 near = u_basis * local_near;
     //int cell = pack_polar(normalize(norm4.xyz / norm4.w));
-    float dist = length(near) * sign(dot(max_mask, local_near));
+    float dist = length(local_near) * (is_neg ? -1 : 1);
     return itob(int(clamp(round(dist * kDimLen), -127, 127)));
     //return cell;
 }

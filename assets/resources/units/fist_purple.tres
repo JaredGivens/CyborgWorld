@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://b4lqqsai2jtsw"]
+
+[ext_resource type="Texture2D" uid="uid://cc40bwer2yw0u" path="res://textures/units/purple.jpeg" id="1_enwqg"]
+[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_uwcnp"]
+
+[resource]
+script = ExtResource("2_uwcnp")
+Name = "Power Fist"
+Desc = ""
+Icon = ExtResource("1_enwqg")
+Type = 2
+CastType = 0
+Shape = 2
+Basis = Basis(3, 0, 0, 0, 5, 0, 0, 0, 2)
+BlockId = -1

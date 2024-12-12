@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://ff5sowg487lm"]
+
+[ext_resource type="Texture2D" uid="uid://c4jphqrqtmt0n" path="res://textures/units/visor.png" id="1_2hagn"]
+[ext_resource type="Script" path="res://scripts/Unit.cs" id="2_n0v02"]
+
+[resource]
+script = ExtResource("2_n0v02")
+Name = "Jet boots"
+Desc = ""
+Icon = ExtResource("1_2hagn")
+Type = 2
+CastType = 0
+Shape = 0
+Basis = Basis(5, 0, 0, 0, 4, 0, 0, 0, 3)
+BlockId = 1

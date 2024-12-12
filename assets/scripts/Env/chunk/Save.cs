@@ -199,11 +199,11 @@ namespace Chunk {
       return this;
     }
     public Godot.Collections.Array<RDUniform> GetPUniforms(Transform3D tsf, Int16 blockId) {
+      _rwlock.EnterWriteLock();
       _compute.UpdateUniformBuf(tsf, Skey * Geometry.Size, blockId);
       return _compute.PUniforms;
     }
     public void ComputeUpdate() {
-      _rwlock.EnterWriteLock();
       var bytes = _compute.GetCellBuffer();
       Buffer.BlockCopy(bytes, 0, Durable.Cells, 0, Geometry.DimLen3 * sizeof(Int32));
       RebuildGeometry();

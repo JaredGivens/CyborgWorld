@@ -24,7 +24,11 @@ public partial class Unit : Resource {
   public UnitType Type;
   //public UnitData data;
   [Export]
+  public CastType CastType;
+  [Export]
   public AoeShape Shape;
   [Export]
-  public Basis Basis;
+  public Basis Basis = Basis.Identity;
+  [Export]
+  public Int16 BlockId = -1;
 }
