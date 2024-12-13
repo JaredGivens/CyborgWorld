@@ -24,7 +24,11 @@ namespace Chunk {
     static void InitBlocks() {
       var fns = DirAccess.GetFilesAt("res://resources/blocks");
       foreach (var fn in fns) {
-        var block = GD.Load<Block>($"res://resources/blocks/{fn}");
+        var nameEnd = fn.IndexOf(".tres");
+        if (nameEnd == -1) {
+          continue;
+        }
+        var block = GD.Load<Block>($"res://resources/blocks/{fn.Substr(0, nameEnd)}.tres");
         var fid = frameId(_albedoJson, block.AlbedoFn);
         var uv = new Vector2(fid, (Single)block.Mapping);
         BlockUvs[(Int32)block.BlockId] = uv;

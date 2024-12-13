@@ -1,13 +1,13 @@
 [gd_resource type="Resource" load_steps=3 format=3 uid="uid://dvokqsice3syu"]
 
-[ext_resource type="Texture2D" uid="uid://car3xydhbc1k6" path="res://textures/units/ksLOOYgVJROeQH2fDUbFh.png" id="1_6ntok"]
+[ext_resource type="Texture2D" uid="uid://by0e624ukwqve" path="res://textures/units/jetboots.png" id="1_r88pa"]
 [ext_resource type="Script" path="res://scripts/Unit.cs" id="2_t165q"]
 
 [resource]
 script = ExtResource("2_t165q")
 Name = "Jet boots"
 Desc = ""
-Icon = ExtResource("1_6ntok")
+Icon = ExtResource("1_r88pa")
 Type = 8
 CastType = 0
 Shape = 0

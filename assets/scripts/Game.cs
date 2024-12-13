@@ -36,8 +36,11 @@ public partial class Game : Node3D {
     Glob.Units = new List<Unit>();
     var fns = DirAccess.GetFilesAt("res://resources/units");
     foreach (var fn in fns) {
-      GD.Print($"res://resources/units/{fn}");
-      Glob.Units.Add(GD.Load<Unit>($"res://resources/units/{fn}"));
+      var nameEnd = fn.IndexOf(".tres");
+      if (nameEnd == -1) {
+        continue;
+      }
+      Glob.Units.Add(GD.Load<Unit>($"res://resources/units/{fn.Substr(0, nameEnd)}.tres"));
     }
   }
   public override void _Process(Double delta) {
